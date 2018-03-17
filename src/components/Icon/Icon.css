@@ -1,0 +1,22 @@
+.Icon{
+  width: 30px;
+  height: 30px;
+}
+
+.MenuIcon{
+  width: 30px;
+  height: 30px;
+}
+
+.CloudIcon{
+  width: 20px;
+  height: 20px;
+}
+
+
+@media(min-width: 768px){
+  .MenuIcon{
+    width: 50px;
+    height: 50px;
+  }
+}

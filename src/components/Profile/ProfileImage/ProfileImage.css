@@ -1,0 +1,16 @@
+.ProfileImage{
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.ProfileImageBox{
+  position: relative;
+}
+
+.ProfileImageBox svg{
+  position: absolute;
+  right: -20px;
+  top: -20px;
+}

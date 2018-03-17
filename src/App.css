@@ -1,0 +1,13 @@
+
+.Layout{
+  height: 100%;
+  display: flex;
+  flex: 1;
+}
+
+.Layout > main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
