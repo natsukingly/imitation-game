@@ -11,3 +11,13 @@
   align-items: center;
   flex: 1;
 }
+
+.Loading {
+  margin-top: 50px;
+}
+
+@media(min-width: 768px){
+  .Loading {
+    margin-top: 150px;
+  }
+}

@@ -5,10 +5,12 @@ import classes from './Logo.css';
 const logo = (props) => {
 
   let attachedClasses = [classes.Logo, classes.Medium];
-  if (props.LogoSize === "small") {
+  if (props.logoSize === "small") {
     attachedClasses = [classes.Logo, classes.Small];
-  } else if (props.LogoSize === "large") {
+  } else if (props.logoSize === "large") {
     attachedClasses = [classes.Logo, classes.Large];
+  } else if (props.logoSize === "extraSmall"){
+    attachedClasses = [classes.Logo, classes.ExtraSmall];
   }
 
   return(

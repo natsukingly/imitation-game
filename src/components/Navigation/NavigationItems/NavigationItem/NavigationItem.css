@@ -18,12 +18,15 @@
 }
 .NavigationItem a:hover{
     color: #000;
+
 }
 
 .NavigationItem a:active,
 .NavigationItem a.active {
     color: #000;
     border-left: 3px solid #000;
+    /* pointer-events: none; */
+
 
 }
 

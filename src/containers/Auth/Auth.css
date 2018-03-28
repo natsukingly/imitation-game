@@ -1,11 +1,12 @@
 .Auth {
-    margin: 50px auto;
+    margin: 10px auto;
     width: 95%;
     text-align: center;
     padding: 10px;
     box-sizing: border-box;
 }
 .Title{
+  margin-top: 0;
   letter-spacing: 12px;
   line-height: 40px;
   font-size: 30px;
@@ -16,6 +17,8 @@
 .LoginBtns{
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
 }
 
 .BackBtn{
@@ -31,13 +34,16 @@ p{
   margin: 0;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
     .Auth {
-        /* margin: 250px auto; */
+        margin: 50px auto;
         width: 400px;
     }
     .LoginBtns{
       max-width: 300px;
       margin: 0 auto;
+    }
+    .Title{
+      margin-top: 80px;
     }
 }

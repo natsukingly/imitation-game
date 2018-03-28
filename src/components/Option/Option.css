@@ -1,0 +1,81 @@
+.Option{
+  padding: 30px 20px;
+  margin: 30px auto;
+  max-width: 200px;
+  color: #5d627b;
+  background: white;
+  border-top: solid 5px #5d627b;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+}
+.Option p {
+    margin: 0;
+    padding: 0;
+}
+
+.OptionAnswer{
+  padding: 0;
+  margin: 0 auto 40px;
+  max-width: 200px;
+  color: #5d627b;
+  /* background: white;
+  border-top: solid 5px #5d627b;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22); */
+  /* cursor: pointer; */
+}
+.OptionAnswer p {
+    margin: 0;
+    padding: 0;
+}
+
+.ChatBox{
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  margin: 15px 0;
+  padding: 10px;
+  min-width: 120px;
+  max-width: 100%;
+  color: #555;
+  font-size: 16px;
+  background: #eee;
+}
+
+.ChatBox:before{
+  content: "";
+  position: absolute;
+  top: -22px;
+  left: 20px;
+  margin-left: -15px;
+  border: 10px solid transparent;
+  border-bottom: 15px solid #eee;
+}
+
+
+
+.User{
+  display: flex;
+  align-items: center;
+}
+
+.UserImage{
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: #eee;
+}
+
+.UserImageDummy{
+  width: 22px;
+  height: 22px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: white;
+  border: 4px double #000;
+}

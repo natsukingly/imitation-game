@@ -59,8 +59,8 @@ class Auth extends Component {
     }
 
     submitHandler = ( event ) => {
-        event.preventDefault();
-        this.props.onAuth( this.state.controls.email.value, this.state.controls.password.value);
+      event.preventDefault();
+      this.props.onAuth( this.state.controls.email.value, this.state.controls.password.value);
     }
 
     submitTwitterHandler = ( event ) => {
@@ -69,7 +69,6 @@ class Auth extends Component {
     }
 
     switchAuthModeHandler = () => {
-        console.log("pressed");
         this.setState( prevState => {
             return { emailMode: !prevState.emailMode };
         } );
@@ -97,10 +96,6 @@ class Auth extends Component {
                 changed={( event ) => this.inputChangedHandler( event, formElement.id )} />
         ) );
 
-        if ( this.props.loading ) {
-            form = <Spinner />
-        }
-
         let errorMessage = null;
 
         if ( this.props.error ) {
@@ -108,6 +103,8 @@ class Auth extends Component {
                 <p>{this.props.error.message}</p>
             );
         }
+
+
 
         // let authRedirect = null;
         // if ( this.props.isAuthenticated ) {
@@ -120,11 +117,11 @@ class Auth extends Component {
             >
             <Button
                 clicked={this.submitTwitterHandler}
-                >Twitter</Button>
+                >Twitterで続ける</Button>
 
             <Button
                 clicked={this.switchAuthModeHandler}
-            >Email</Button>
+            >Emailで続ける</Button>
           </div>
         );
 
@@ -135,14 +132,18 @@ class Auth extends Component {
                   onClick={this.switchAuthModeHandler}
                   >戻る</p>
                 {form}
-                <Button btnType="Success">SUBMIT</Button>
+                <Button>SUBMIT</Button>
             </form>
           );
         }
 
+        if ( this.props.loading ) {
+            loginForm = <div><Spinner /></div>;
+        }
+        
         let top = null;
 
-        if (this.props.isAuthenticated === true || this.props.isAuthenticated === false){
+        if (this.props.uid === null || this.props.uid === false){
           top = (
             <Aux>
               <h1 className={classes.Title}>IMITATION<br/>GAME</h1>
@@ -159,6 +160,7 @@ class Auth extends Component {
         return (
           <Aux>
             {top}
+
           </Aux>
         );
     }
@@ -166,9 +168,9 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
     return {
-        loading: state.auth.loading,
-        error: state.auth.error,
-        isAuthenticated: state.auth.user !== false,
+        loading: state.user.loading,
+        error: state.user.error,
+        uid: state.user.id,
         // authRedirectPath: state.auth.authRedirectPath,
     };
 };

@@ -14,5 +14,27 @@ export {
     logout,
     setAuthRedirectPath,
     setCurrentUser,
-    checkUserStatus
-} from './auth';
+    checkUserStatus,
+    uploadImage,
+    updateName,
+} from './user';
+
+export {
+  createGame,
+  checkGameStatus,
+  checkUserGamingStatus,
+  startGame,
+  setQuestion,
+  setPresetOptions,
+  submitInput,
+  checkPlayerStatus,
+  moveForward,
+  selectOption,
+  getPlayerRanking,
+  setPlayerReady,
+  moveToLastStage,
+  moveToNextQuestion,
+  getGameInfo,
+  joinGame,
+  exitGame,
+} from './game';

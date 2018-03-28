@@ -21,9 +21,14 @@ class Layout extends Component {
         } );
     }
 
-
     render () {
         let toolbar = null;
+
+        let attachedClasses = [classes.Content];
+
+        if(this.props.isAuthenticated !== true) {
+            attachedClasses = [classes.Content, classes.Home];
+        }
 
         if(this.props.isAuthenticated){
           toolbar = (
@@ -37,9 +42,10 @@ class Layout extends Component {
                 {toolbar}
                 <SideDrawer
                     isAuth={this.props.isAuthenticated}
+                    isGaming={this.props.isGaming}
                     open={this.state.showSideDrawer}
                     closed={this.sideDrawerClosedHandler} />
-                <main className={classes.Content}>
+                <main className={attachedClasses.join(' ')}>
                     {this.props.children}
                 </main>
             </Aux>
@@ -49,7 +55,8 @@ class Layout extends Component {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.user || state.auth.user !== false
+        isAuthenticated: state.user.isAuthenticated,
+        isGaming: state.user.isGaming || state.game.userIsGaming
     };
 };
 

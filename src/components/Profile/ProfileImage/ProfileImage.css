@@ -2,7 +2,8 @@
   border-radius: 50%;
   height: 150px;
   width: 150px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  background-color: #eee;
 }
 
 .ProfileImageBox{
@@ -11,6 +12,18 @@
 
 .ProfileImageBox svg{
   position: absolute;
-  right: -20px;
-  top: -20px;
+  right: 10px;
+  top: -5px;
+}
+
+.Input{
+  display: none;
+}
+
+@media(min-widthL 768px){
+  .ProfileImageBox svg{
+    position: absolute;
+    right: -30px;
+    top: -30px;
+  }
 }

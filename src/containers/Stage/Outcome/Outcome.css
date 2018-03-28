@@ -1,0 +1,97 @@
+.SectionTitle{
+  max-width: 180px;
+  /* background-color: #f9f9f9; */
+  border-bottom: solid 3px #aaa;
+  position: relative;
+  margin: 0 auto 30px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px;
+}
+
+.SectionTitle:not(:first-child){
+  margin: 80px auto 30px;
+}
+
+.SectionTitle:after {
+  position: absolute;
+  content: " ";
+  display: block;
+  border-bottom: solid 3px grey;
+  bottom: -3px;
+  left: 0;
+  width: 20%;
+}
+
+.Forward{
+  display: flex;
+  justify-content: center;
+  margin: 50px;
+}
+
+.Note{
+  max-width: 250px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+
+.Result{
+  margin-top: 10px;
+  height: 500px;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.Result h2{
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.Users{
+  display: flex;
+  justify-content: space-around;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.UserList{
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.UserListItem{
+  display: flex;
+  align-items: center;
+
+}
+
+.UserImage{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-size: cover;
+  background-position: center;
+}
+
+.RankedUsers{
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.RankedUser{
+
+  margin-bottom: 20px;
+}
+
+.RankedUser h2{
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 5px;
+}

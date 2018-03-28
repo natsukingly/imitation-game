@@ -8,7 +8,7 @@ const toolbar = ( props ) => (
     <header className={classes.Toolbar}>
         <div className={classes.Logo}>
             <Link to='/'>
-              <p className={classes.logo}>IMMITATION <br/> GAME</p>
+              <p className={classes.logo}>IMITATION <br/> GAME</p>
             </Link>
         </div>
         <DrawerToggle clicked={props.drawerToggleClicked} />

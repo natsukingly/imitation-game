@@ -1,0 +1,44 @@
+.SectionTitle{
+  max-width: 180px;
+  /* background-color: #f9f9f9; */
+  border-bottom: solid 3px #aaa;
+  position: relative;
+  margin: 0 auto 30px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px;
+}
+
+.SectionTitle:not(:first-child){
+  margin: 80px auto 30px;
+}
+
+.SectionTitle:after {
+  position: absolute;
+  content: " ";
+  display: block;
+  border-bottom: solid 3px grey;
+  bottom: -3px;
+  left: 0;
+  width: 20%;
+}
+
+.Forward{
+  display: flex;
+  justify-content: center;
+  margin: 50px;
+}
+
+.Note{
+  max-width: 250px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.Users{
+  display: flex;
+  justify-content: space-around;
+  max-width: 300px;
+  margin: 0 auto;
+}
