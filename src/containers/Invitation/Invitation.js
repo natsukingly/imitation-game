@@ -1,8 +1,8 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-
+import { Link, Redirect } from 'react-router-dom';
+//
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Button from '../../components/UI/Button/Button';
 import Aux from '../../hoc/Aux/Aux';
@@ -15,12 +15,16 @@ class Invitation extends Component {
     }
 
     submitHandler = () => {
-      // console.log("joinGame")
+      this.setState({joined: true})
       this.props.joinGame(this.props.match.params.id);
     }
     forceSubmitHandler = () => {
-      // console.log("joinGame")
-      this.props.JoinGameWithForce(this.props.match.params.id);
+      this.setState({joined: true})
+      this.props.joinGameWithForce(this.props.match.params.id);
+    }
+
+    state={
+      joined: false
     }
 
 
@@ -28,15 +32,23 @@ class Invitation extends Component {
 
         let content = <div className={classes.Invitation}><Spinner /></div>;
 
+
         if(this.props.loading === true){
           content = <div className={classes.Invitation}><Spinner /></div>;
         }
+        else if(this.props.isGaming && this.props.gameId === this.props.match.params.id){
+          content = <Redirect to="/game"/>;
+        }
+        else if(this.state.joined === true){
+          content = <Redirect to="/game"/>;
+        }
 
         else if(this.props.isGaming && this.props.invitationInfo && this.props.invitationInfo.info.status === 'init'){
+
           content = (
             <div className={classes.Invitation}>
               <h2 className={classes.Leader}>
-                {this.props.invitationInfo.players[this.props.match.params.id].name}
+                {this.props.invitationInfo.players[this.props.invitationInfo.info.leader].name}
               </h2>
               <p>のゲームに参加しますか？</p>
               <p className={classes.Warning}>「はい」を選択すると今参加中のゲームから強制退場させられます。</p>
@@ -50,7 +62,7 @@ class Invitation extends Component {
           content = (
             <div className={classes.Invitation}>
               <h2 className={classes.Leader}>
-                {this.props.invitationInfo.players[this.props.match.params.id].name}
+                {this.props.invitationInfo.players[this.props.invitationInfo.info.leader].name}
               </h2>
               <p>のゲームに参加しますか？</p>
               <Button clicked={this.submitHandler}>はい</Button>
@@ -66,6 +78,7 @@ class Invitation extends Component {
           );
         }
 
+
         return (
           <Aux>
             {content}
@@ -79,7 +92,8 @@ const mapStateToProps = state => {
         // isValid: state.game.invitationInfo.info.status === 'init',
         invitationInfo: state.game.invitationInfo,
         loading: state.game.loading,
-        isGaming: state.game.userIsGaming
+        isGaming: state.game.userIsGaming,
+        gameId: state.user.gameId
     };
 }
 

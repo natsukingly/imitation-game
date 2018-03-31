@@ -54,7 +54,7 @@ const gameSetPresetOptionsSuccess = (state, action) => {
 };
 
 const gameCheckStatusSuccess = (state, action) => {
-    console.log(action)
+    // console.log(action)
     return updateObject( state, {
         id: action.info.info.gameId,
         info: action.info.info,

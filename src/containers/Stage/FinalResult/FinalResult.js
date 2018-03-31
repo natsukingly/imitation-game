@@ -36,7 +36,7 @@ class FinalResult extends Component {
           if(a.score < b.score) return 1;
           return 0;
         });
-        let prevScore  = 0;
+        let prevScore  = null;
         let prevRank = 0;
 
         winners = ranking.map((rankedUser, index) => {

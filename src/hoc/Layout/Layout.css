@@ -1,9 +1,10 @@
 .Content {
-    margin-top: 45px;
+    padding-top: 45px;
+    z-index: 50;
 }
 
 .Home {
-    margin-top: 20px;
+    padding-top: 20px;
 }
 
 .Content > div{
@@ -11,9 +12,17 @@
   padding-bottom: 20px;
 }
 
+.BkgOverlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+}
 
 @media(min-width: 768px){
   .Content {
-      margin-top: 72px;
+      padding-top: 72px;
   }
 }

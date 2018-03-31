@@ -1,5 +1,5 @@
 .Button {
-    background-color: transparent;
+    background-color: white;
     border: 1px solid #aaa;
     color: #000;
     outline: none;
@@ -41,7 +41,7 @@
 }
 
 .Link a{
-  display: block;  
+  display: block;
 }
 
 .GameMenu{

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import Aux from '../Aux/Aux';
 import classes from './Layout.css';
+import bkg from '../../assets/images/bkg.png';
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 
@@ -39,6 +40,7 @@ class Layout extends Component {
 
         return (
             <Aux>
+                <div className={classes.BkgOverlay} style={{backgroundImage: 'url(' + bkg + ')'}}></div>
                 {toolbar}
                 <SideDrawer
                     isAuth={this.props.isAuthenticated}

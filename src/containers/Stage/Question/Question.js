@@ -17,6 +17,7 @@ class Question extends Component {
     componentDidMount (){
       this.props.setQuestion()
       this.props.setPresetOptions()
+      this.props.checkPlayerStatus();
     }
 
     state = {
@@ -213,7 +214,8 @@ const mapDispatchToProps = dispatch => {
     setPresetOptions: () => dispatch( actions.setPresetOptions()),
     setQuestion: () => dispatch( actions.setQuestion() ),
     submitInput: (input) => dispatch( actions.submitInput(input) ),
-    moveForward: (nextStage) => dispatch( actions.moveForward(nextStage))
+    moveForward: (nextStage) => dispatch( actions.moveForward(nextStage)),
+    checkPlayerStatus: () => dispatch( actions.checkPlayerStatus() ),
   };
 };
 

@@ -22,7 +22,7 @@ class Init extends Component {
 
       let leader = null;
 
-      if(this.props.leader && this.props.gameId === this.props.cuid){
+      if(this.props.leader && this.props.leader.id === this.props.cuid){
         leader = (
           <div className={classes.Leader}>
             {/* <div style={{backgroundImage: 'url(' + this.props.leader.image + ')'}} className={classes.LeaderPhoto} alt="Leader_photo"> </div> */}

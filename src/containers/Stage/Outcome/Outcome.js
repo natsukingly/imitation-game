@@ -19,7 +19,8 @@ import * as actions from '../../../store/actions/index';
 class Options extends Component {
     componentDidMount (){
       this.props.setPresetOptions();
-
+      this.props.checkPlayerStatus();
+      window.scrollTo(0,0);
       // this.props.getPlayerRanking();
     }
 
@@ -65,14 +66,26 @@ class Options extends Component {
               <div>
                 <h3 className={classes.Three}>3</h3>
                 <h3 className={classes.Two}>2</h3>
-                <h3 className={classes.One}>1</h3>
-                <div className={classes.ResultStatement}>
+                <div className={classes.ResultStatementEarly}>
                   <Logo size="large"/>
-                  <h2>不正解w</h2>
+                  <h2>不正解♡</h2>
                 </div>
               </div>
             );
             break;
+            case "":
+              result = (
+                <div>
+                  <h3 className={classes.Three}>3</h3>
+                  <h3 className={classes.Two}>2</h3>
+                  <h3 className={classes.One}>1</h3>
+                  <div className={classes.ResultStatement}>
+                    <Logo size="large"/>
+                    <h2>不正解w</h2>
+                  </div>
+                </div>
+              );
+              break;
           case this.props.cuid:
               result = (
                 <div>
@@ -357,6 +370,7 @@ const mapDispatchToProps = dispatch => {
       moveToFinalResult: () => dispatch( actions.moveToFinalResult()),
       moveToNextQuestion: () => dispatch( actions.moveToNextQuestion()),
       setPlayerReady: () => dispatch( actions.setPlayerReady()),
+      checkPlayerStatus: () => dispatch( actions.checkPlayerStatus() ),
     }
 }
 

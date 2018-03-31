@@ -103,6 +103,7 @@ export const startGame = (status) => {
 }
 
 export const joinGame = (gameId) => {
+  // console.log(gameId)
   return dispatch => {
     const cuid = firebase.auth().currentUser.uid;
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
@@ -296,10 +297,13 @@ export const exitGame = () => {
         firebase.database().ref('/games/' + user.gameId + '/players/' + cuid).update({active: false})
         if(user.leader === true){
           firebase.database().ref('/games/' + user.gameId + '/info').once('value').then(
+
             gameSnapshot =>
               {
+                // console.log(gameSnapshot.val())
+                // console.log(gameSnapshot.val().status)
                 if(gameSnapshot.val().status !== 'finalResult'){
-                  firebase.database().ref('/games/' + cuid + '/info/').update({leader: false, status: 'noLeader'})
+                  firebase.database().ref('/games/' + user.gameId + '/info').update({leader: false, status: 'noLeader'})
                 }
               }
           )
@@ -402,6 +406,16 @@ export const selectOption = (optionId) => {
                   }
                 )
                 break;
+              case cuid:
+                firebase.database().ref('/games/' + gameId + '/score/' + cuid)
+                  .once('value').then( scoreSnapshot =>
+                    {
+                      const currentScore = scoreSnapshot.val().score;
+                      firebase.database().ref('/games/' + gameId + '/score/' + cuid)
+                      .update({score: currentScore - 3, lastScore: currentScore});
+                    }
+                  )
+                  break;
               default:
                 firebase.database().ref('/games/' + gameId + '/score/' + optionId)
                 .once('value').then( scoreSnapshot =>

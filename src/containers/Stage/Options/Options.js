@@ -16,7 +16,22 @@ import * as actions from '../../../store/actions/index';
 class Options extends Component {
     componentDidMount (){
       this.props.setPresetOptions()
+      this.props.checkPlayerStatus();
+      let  N = Object.keys(this.props.players).length + 2;
+      let optionOrder = Array.apply(null, {length: N}).map(Number.call, Number)
+      this.setState({optionOrder: this.shuffle(optionOrder)})
     }
+
+    // shouldComponentUpdate(nextProps, nextState){
+    //   if(this.props.correctAnswer === nextProps.correctAnswer){
+    //     return false;
+    //   }
+    //   return true;
+    // }
+    state = {
+      optionOrder: null
+    }
+
     shuffle = (array) => {
         var n = array.length, i, t;
 
@@ -29,6 +44,7 @@ class Options extends Component {
         return array;
     }
 
+
     selectOptionHandler = (event) => {
       const optionId = event.target.getAttribute("data-option-id");
       this.props.selectOption(optionId);
@@ -38,14 +54,18 @@ class Options extends Component {
       this.props.moveForward("outcome");
     }
 
+
     render (){
+
+
+      // console.log(this.state.optionOrder)
 
       let answers = null;
       let correctAnswer = null;
       let dummyAnswer = null;
-      let shuffledAnswer = null;
+      let shuffledAnswers = [];
 
-      if(this.props.options && this.props.dummyAnswer && this.props.correctAnswer){
+      if(this.props.options && this.props.dummyAnswer && this.props.correctAnswer && this.state.optionOrder !== null){
         correctAnswer = (
           <PreOption
             content={this.props.correctAnswer}
@@ -81,7 +101,15 @@ class Options extends Component {
         );
         answers.push(correctAnswer);
         answers.push(dummyAnswer);
-        shuffledAnswer = this.shuffle(answers);
+
+        // console.log(answers)
+
+        let orderIndex = null;
+        for (var i = 0; i < this.state.optionOrder.length; i++) {
+          orderIndex = this.state.optionOrder[i]
+          shuffledAnswers.push(answers[orderIndex])
+        }
+        // console.log(shuffledAnswers)
       }
 
       let userList = null;
@@ -123,7 +151,7 @@ class Options extends Component {
         content = (
           <div>
             <p className={classes.OptionsTitle}>答えを一つ選んでください。</p>
-            {shuffledAnswer}
+            {shuffledAnswers}
           </div>
         );
       } else if (this.props.playerStatus && this.props.playerStatus === true){
@@ -171,7 +199,8 @@ const mapDispatchToProps = dispatch => {
     return {
       selectOption: (optionId) => dispatch( actions.selectOption(optionId)),
       setPresetOptions: () => dispatch( actions.setPresetOptions()),
-      moveForward: (nextStage) => dispatch( actions.moveForward(nextStage))
+      moveForward: (nextStage) => dispatch( actions.moveForward(nextStage)),
+      checkPlayerStatus: () => dispatch( actions.checkPlayerStatus() ),
     }
 }
 
