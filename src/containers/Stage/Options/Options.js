@@ -8,9 +8,9 @@ import PreOption from '../../../components/Option/PreOption';
 import Button from '../../../components/UI/Button/Button';
 import User from '../../../components/User/User';
 // import Button from '../../components/UI/Button/Button';
-// import Spinner from '../../components/UI/Spinner/Spinner';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 // import Profile from '../../components/Profile/Profile';
-import classes from './Option.css';
+import classes from './Options.css';
 import * as actions from '../../../store/actions/index';
 
 class Options extends Component {
@@ -109,7 +109,7 @@ class Options extends Component {
 
       let nextBtn = null;
 
-      if(this.props.gameId === this.props.cuid){
+      if(this.props.leaderId === this.props.cuid){
         nextBtn = (
           <Button
             clicked={this.moveForwardHandler}
@@ -122,7 +122,7 @@ class Options extends Component {
       if(this.props.playerStatus !== true){
         content = (
           <div>
-            <p style={{textAlign: 'center'}}>Options</p>
+            <p className={classes.OptionsTitle}>答えを一つ選んでください。</p>
             {shuffledAnswer}
           </div>
         );
@@ -133,8 +133,11 @@ class Options extends Component {
             <div className={classes.Users}>
               {userList}
             </div>
+            <div className={classes.Loading}>
+              <Spinner />
+            </div>
             <h2 className={classes.SectionTitle}>Note</h2>
-            <p　className={classes.Note}>ホストは自由なタイミングで次のステージにゲームを進めることができます。</p>
+            <p　className={classes.Note}>ホスト({this.props.leader.name})は自由なタイミングで次のステージにゲームを進めることができます。</p>
             <div className={classes.Forward}>
               {nextBtn}
             </div>
@@ -154,11 +157,10 @@ const mapStateToProps = state => {
     return {
       players: state.game.players,
       playerStatus: state.game.playerStatus,
-      gameId: state.user.gameId,
+      gameId: state.game.id,
       cuid: state.user.id,
-      // gameStatus: state.game.status,
-      // gameStage: state.game.stage + 1,
-      // gameLength: state.game.info.length,
+      leader: state.game.players[state.game.leader],
+      leaderId: state.game.leader,
       correctAnswer: state.game.correctAnswer,
       dummyAnswer: state.game.dummyAnswer,
       options: state.game.input,

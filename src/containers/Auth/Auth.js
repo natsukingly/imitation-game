@@ -43,7 +43,7 @@ class Auth extends Component {
                 touched: false
             }
         },
-        emailMode: false
+        emailMode: false,
     }
 
 
@@ -137,29 +137,33 @@ class Auth extends Component {
           );
         }
 
-        if ( this.props.loading ) {
-            loginForm = <div><Spinner /></div>;
-        }
-        
-        let top = null;
+
+
+        let content = null;
 
         if (this.props.uid === null || this.props.uid === false){
-          top = (
+          content = (
             <Aux>
               <h1 className={classes.Title}>IMITATION<br/>GAME</h1>
-              <Logo />
+              <div className={classes.LogoBox}>
+                <Logo />
+              </div>
               <div className={classes.Auth}>
                 {errorMessage}
+
                 {loginForm}
 
               </div>
             </Aux>
           );
         }
+        if ( this.props.loading ) {
+            content = <div className={classes.Loading}><Spinner /></div>;
+        }
 
         return (
           <Aux>
-            {top}
+            {content}
 
           </Aux>
         );

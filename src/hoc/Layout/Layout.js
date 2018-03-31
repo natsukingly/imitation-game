@@ -44,7 +44,9 @@ class Layout extends Component {
                     isAuth={this.props.isAuthenticated}
                     isGaming={this.props.isGaming}
                     open={this.state.showSideDrawer}
-                    closed={this.sideDrawerClosedHandler} />
+                    closed={this.sideDrawerClosedHandler}
+                    userName={this.props.userName}
+                />
                 <main className={attachedClasses.join(' ')}>
                     {this.props.children}
                 </main>
@@ -56,7 +58,8 @@ class Layout extends Component {
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.user.isAuthenticated,
-        isGaming: state.user.isGaming || state.game.userIsGaming
+        isGaming: state.game.userIsGaming,
+        userName: state.user.name
     };
 };
 

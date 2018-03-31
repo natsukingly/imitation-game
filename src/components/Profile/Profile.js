@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import classes from './Profile.css';
 import ProfileName from './ProfileName/ProfileName';
 import ProfileImage from './ProfileImage/ProfileImage';
-import Spinner from '../UI/Spinner/Spinner';
+import * as loadImage from 'blueimp-load-image';
+// import Spinner from '../UI/Spinner/Spinner';
 
 import * as actions from '../../store/actions/index';
 import { updateObject, checkValidity } from '../../shared/utility';
@@ -64,12 +65,31 @@ class Profile extends Component {
 
     startUploadingHandler(){
       const a = document.getElementsByName("UploadImageInput");
+
       a[0].click();
     }
 
     saveUploadingHandler= (event) => {
 
-      this.props.uploadImage(event.target.files[0]);
+      const file = event.target.files[0];
+      loadImage.parseMetaData(file, (data) => {
+        const options = {
+          maxHeight: 1024,
+          maxWidth: 1024,
+          canvas: true
+        };
+        if (data.exif) {
+          options.orientation = data.exif.get('Orientation');
+        }
+        loadImage(file, (canvas) => {
+          const dataUri = canvas.toDataURL('image/jpeg');
+          this.props.uploadImage(dataUri);
+          console.log(dataUri)
+          // imgNode.src = dataUri;
+        }, options);
+      });
+      // console.log(event.target.files[0]);
+      // this.props.uploadImage(event.target.files[0]);
       // this.props.uploadImage(file, this.props.user.uid);
     }
 
@@ -111,7 +131,7 @@ class Profile extends Component {
       return (
           <div>
             {profile}
-            <p style={{textAlign: 'center'}}>{this.props.id}</p>
+            {/* <p style={{textAlign: 'center'}}>{this.props.id}</p> */}
           </div>
       );
     }

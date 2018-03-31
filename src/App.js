@@ -10,8 +10,8 @@ import GameMenu from './containers/GameMenu/GameMenu';
 import Game from './containers/Game/Game';
 import Logout from './containers/Auth/Logout/Logout';
 import ExitGame from './containers/Game/ExitGame/ExitGame';
-import ExitGameToResult from './containers/Game/ExitGameToResult/ExitGameToResult';
-import FinalResult from './containers/FinalResult/FinalResult';
+// import ExitGameToResult from './containers/Game/ExitGameToResult/ExitGameToResult';
+// import FinalResult from './containers/FinalResult/FinalResult';
 import Invitation from './containers/Invitation/Invitation';
 import Spinner from './components/UI/Spinner/Spinner';
 import classes from './App.css';
@@ -54,7 +54,7 @@ class App extends Component {
           <Route path="/" exact component={Home} />
           <Route path="/logout" component={Logout} />
           <Route path="/exit-game" component={ExitGame} />
-          <Route path="/exit-game-to-result" component={ExitGameToResult} />
+          <Route path="/invitation/:id" component={Invitation} />
           <Redirect to="/game" />
         </Switch>
       );
@@ -62,7 +62,6 @@ class App extends Component {
       routes = (
         <Switch>
           <Route path="/invitation/:id" component={Invitation} />
-          <Route path="/game-result" component={FinalResult} />
           <Route path="/game-menu" component={GameMenu} />
           <Route path="/checkout" component={asyncCheckout} />
           <Route path="/orders" component={asyncOrders} />

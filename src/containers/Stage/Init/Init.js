@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { NavLink } from 'react-router-dom';
 
-
+import noImage from '../../../assets/images/no-image.png';
 import Button from '../../../components/UI/Button/Button';
-// import Spinner from '../../components/UI/Spinner/Spinner';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 // import Profile from '../../components/Profile/Profile';
 import classes from './Init.css';
 import * as actions from '../../../store/actions/index';
@@ -22,7 +22,7 @@ class Init extends Component {
 
       let leader = null;
 
-      if(this.props.leader && this.props.gameId === this.props.userId){
+      if(this.props.leader && this.props.gameId === this.props.cuid){
         leader = (
           <div className={classes.Leader}>
             {/* <div style={{backgroundImage: 'url(' + this.props.leader.image + ')'}} className={classes.LeaderPhoto} alt="Leader_photo"> </div> */}
@@ -51,7 +51,7 @@ class Init extends Component {
           <div className={classes.Invitation}>
             <div className={classes.DummyInvitation}>
               <img
-                src={"https://api.qrserver.com/v1/create-qr-code/?data=" + invitationURL + "&size=200x200"}
+                src={"https://api.qrserver.com/v1/create-qr-code/?data=" + invitationURL + "&size=300x300"}
                 alt="QRコード"
                 className={classes.InvitationImage}
               />
@@ -66,16 +66,29 @@ class Init extends Component {
       if(this.props.players){
         userList = (
           Object.keys(this.props.players).map( (userId) => {
+            let photoURL = noImage;
+            if(this.props.players[userId].image !== ''){
+              photoURL = this.props.players[userId].image;
+            }
             return (
               <div className={classes.User} key={userId}>
-                <div style={{backgroundImage: 'url(' + this.props.players[userId].image + ')'}} className={classes.UserImage} alt="user_image"> </div>
-                <p>{this.props.players[userId].name}</p>
+                <div style={{backgroundImage: 'url(' + photoURL + ')'}} className={classes.UserImage} alt="user_image"> </div>
+                <p style={{textAlign: 'center'}}>{this.props.players[userId].name}</p>
               </div>
             );
           })
         );
       }
       // console.log(userList)
+
+      let moveForwardBtn = null
+      if(this.props.leaderId === this.props.cuid){
+        moveForwardBtn = (
+          <Button
+            clicked={this.moveForwardHandler}
+          >ゲームを開始</Button>
+        )
+      }
 
       return (
         <div>
@@ -87,10 +100,11 @@ class Init extends Component {
           <div className={classes.Users}>
             {userList}
           </div>
+          <div className={classes.Loading}>
+            <Spinner />
+          </div>
           <div className={classes.Forward}>
-            <Button
-              clicked={this.moveForwardHandler}
-            >ゲームを開始</Button>
+            {moveForwardBtn}
           </div>
         </div>
       );
@@ -100,13 +114,14 @@ class Init extends Component {
 
 const mapStateToProps = state => {
     return {
-      userId: state.user.id,
+      cuid: state.user.id,
       // userReady:
-      gameId: state.user.gameId || state.game.leader.gameId,
+      gameId: state.game.id,
       // gameStatus: state.game.status,
       gameStage: state.game.stage,
       players: state.game.players,
-      leader: state.game.leader
+      leader: state.game.players[state.game.leader],
+      leaderId: state.game.leader,
     };
 }
 

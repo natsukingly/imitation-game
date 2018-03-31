@@ -1,11 +1,18 @@
 
 
+.Loading{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px;
+}
+
 .SectionTitle{
-  max-width: 180px;
+  max-width: 280px;
   /* background-color: #f9f9f9; */
   border-bottom: solid 3px #aaa;
   position: relative;
-  margin: 0 auto 30px;
+  margin: 80px auto 30px;
   text-align: center;
   font-size: 16px;
   font-weight: 600;
@@ -24,6 +31,12 @@
   bottom: -3px;
   left: 0;
   width: 20%;
+}
+
+@media(min-width: 768px){
+  .SectionTitle{
+    margin: 0 auto 30px;
+  }
 }
 
 .Leader{
@@ -47,6 +60,35 @@
   height: 200px;
   background-color: #eee;
   margin: 0 auto 20px;
+  animation-name: loading;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+.InvitationImage{
+  margin-bottom: 10px;
+  width: 200px;
+  height: 200px;
+  /* padding-right: 15px; */
+}
+
+@media(min-width: 768px){
+  .DummyInvitation{
+    width: 300px;
+    height: 300px;
+  }
+  .InvitationImage{
+    width: 300px;
+    height: 300px;
+  }
+}
+
+
+
+@keyframes loading{
+  0%   { background-color: #eee; }
+  100% { background-color: #bbb; }
 }
 
 .Invitation{
@@ -57,13 +99,10 @@
 
 }
 
-.InvitationImage{
-  margin-bottom: 10px;
-  /* padding-right: 15px; */
-}
+
 
 .InvitationURL{
-  max-width: 200px;
+  max-width: 300px;
   height: 40px;
   overflow: scroll;
 }
@@ -99,7 +138,7 @@
 .Forward{
   display: flex;
   justify-content: center;
-  margin: 50px;
+  margin: 50px 0;
 }
 
 @media(min-width: 768px){

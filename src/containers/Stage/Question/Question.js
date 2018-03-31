@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Aux from '../../../hoc/Aux/Aux';
 import Button from '../../../components/UI/Button/Button';
 import User from '../../../components/User/User';
-// import Spinner from '../../components/UI/Spinner/Spinner';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 // import Profile from '../../components/Profile/Profile';
 import classes from './Question.css';
 import Input from '../../../components/UI/Input/Input';
@@ -16,6 +16,7 @@ import { updateObject, checkValidity } from '../../../shared/utility';
 class Question extends Component {
     componentDidMount (){
       this.props.setQuestion()
+      this.props.setPresetOptions()
     }
 
     state = {
@@ -34,7 +35,8 @@ class Question extends Component {
                 valid: false,
                 touched: false
             },
-        }
+        },
+        errorMessage: false,
     }
     inputChangedHandler = ( event, controlName ) => {
         const updatedControls = updateObject( this.state.controls, {
@@ -45,11 +47,20 @@ class Question extends Component {
             } )
         } );
         this.setState( { controls: updatedControls } );
+        if(this.state.errorMessage === true){
+          this.setState({ errorMessage: false })
+        }
+
     }
     submitHandler = ( event ) => {
       event.preventDefault();
-      this.props.submitInput( this.state.controls.input.value);
-      console.log(this.state.controls.input.value);
+      if(this.state.controls.input.value === this.props.correctAnswer || this.state.controls.input.value === this.props.dummyAnswer){
+        // console.log("error")
+        this.setState({ errorMessage: true })
+      } else {
+        // console.log("submit")
+        this.props.submitInput( this.state.controls.input.value);
+      }
     }
 
     moveForwardHandler = ( event ) => {
@@ -83,9 +94,16 @@ class Question extends Component {
         disableSubmit = true;
       }
 
+      let errorMessage = null;
+
+      if(this.state.errorMessage === true){
+        errorMessage = <p className={classes.ErrorMessage}>提出できない回答です</p>;
+      }
+
       let form = (
           <form onSubmit={this.submitHandler}>
               {input}
+              {errorMessage}
               <Button disabled={disableSubmit}>　提　出　</Button>
           </form>
         );
@@ -127,7 +145,7 @@ class Question extends Component {
       }
       let nextBtn = null;
 
-      if(this.props.gameId === this.props.cuid){
+      if(this.props.leaderId === this.props.cuid){
         nextBtn = (
           <Button
             clicked={this.moveForwardHandler}
@@ -145,15 +163,18 @@ class Question extends Component {
             {form}
           </div>
         );
-      } else if (this.props.playerStatus && this.props.playerStatus === true){
+      } else if (this.props.playerStatus && this.props.playerStatus === true && this.props.players){
         content = (
           <div >
             <h2 className={classes.SectionTitle}>回答未提出のユーザー</h2>
             <div className={classes.Users}>
               {userList}
             </div>
+            <div className={classes.Loading}>
+              <Spinner />
+            </div>
             <h2 className={classes.SectionTitle}>Note</h2>
-            <p　className={classes.Note}>ホストは自由なタイミングで次のステージにゲームを進めることができます。</p>
+            <p　className={classes.Note}>ホスト({this.props.leader.name})は自由なタイミングで次のステージにゲームを進めることができます。</p>
             <div className={classes.Forward}>
               {nextBtn}
             </div>
@@ -175,16 +196,21 @@ const mapStateToProps = state => {
       players: state.game.players,
       playerStatus: state.game.playerStatus,
       cuid: state.user.id,
-      gameId: state.user.gameId,
+      gameId: state.game.id,
       gameStatus: state.game.status,
       gameStage: state.game.stage + 1,
       gameLength: state.game.info.length,
       question: state.game.question,
+      leader: state.game.players[state.game.leader],
+      correctAnswer: state.game.correctAnswer,
+      dummyAnswer: state.game.dummyAnswer,
+      leaderId: state.game.leader,
     };
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    setPresetOptions: () => dispatch( actions.setPresetOptions()),
     setQuestion: () => dispatch( actions.setQuestion() ),
     submitInput: (input) => dispatch( actions.submitInput(input) ),
     moveForward: (nextStage) => dispatch( actions.moveForward(nextStage))

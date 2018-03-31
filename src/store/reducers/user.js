@@ -18,10 +18,12 @@ const authStart = ( state, action ) => {
 };
 
 const authSuccess = (state, action) => {
+
     return updateObject( state, {
         id: action.user.id,
         name: action.user.name,
         image: action.user.image,
+        leader: action.user.leader,
         isGaming: action.user.isGaming,
         gameId: action.user.gameId,
         isAuthenticated: true,

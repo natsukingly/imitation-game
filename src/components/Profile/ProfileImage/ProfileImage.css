@@ -4,6 +4,18 @@
   width: 150px;
   margin-bottom: 10px;
   background-color: #eee;
+  background-size: cover;
+  background-position: center;
+  animation-name: loading;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+
+@keyframes loading{
+  0%   { background-color: #eee; }
+  100% { background-color: #bbb; }
 }
 
 .ProfileImageBox{
@@ -13,17 +25,25 @@
 .ProfileImageBox svg{
   position: absolute;
   right: 10px;
-  top: -5px;
+  top: -10px;
+  background-color: white;
+  padding: 5px;
+  border-radius: 50%;
 }
 
 .Input{
   display: none;
 }
 
-@media(min-widthL 768px){
+@media(min-width: 768px){
   .ProfileImageBox svg{
     position: absolute;
     right: -30px;
     top: -30px;
+  }
+  .ProfileImage{
+    height: 250px;
+    width: 250px;
+
   }
 }

@@ -6,7 +6,8 @@ import Init from '../Stage/Init/Init';
 import Question from '../Stage/Question/Question';
 import Options from '../Stage/Options/Options';
 import Outcome from '../Stage/Outcome/Outcome';
-import Standby from '../Stage/Standby/Standby';
+import FinalResult from '../Stage/FinalResult/FinalResult';
+import NoLeader from '../Stage/NoLeader/NoLeader';
 
 // import Button from '../../components/UI/Button/Button';
 // import Spinner from '../../components/UI/Spinner/Spinner';
@@ -21,29 +22,6 @@ class Game extends Component {
 
     }
 
-    // moveForwardHandler = ( event ) => {
-    //     let nextStatus = null;
-    //     switch(this.props.gameStatus){
-    //       case 'init':
-    //         nextStatus = 'Questions';
-    //         break;
-    //       case 'question':
-    //         nextStatus = 'options';
-    //         break;
-    //       case 'options':
-    //         nextStatus = 'outcome';
-    //         break;
-    //       case 'outcome':
-    //         nextStatus = 'standby';
-    //         break;
-    //       case 'standby':
-    //         nextStatus = 'init';
-    //         break;
-    //       default:
-    //         nextStatus = this.props.gameStatus;
-    //     }
-    //
-    // }
 
     render () {
 
@@ -63,14 +41,11 @@ class Game extends Component {
           case 'outcome':
             content = <Outcome />;
             break;
-          case 'post-question-standby':
-            content = <Standby />;
+          case 'finalResult':
+            content = <FinalResult />;
             break;
-          case 'post-options-standby':
-            content = <Standby />;
-            break;
-          case 'post-outcome-standby':
-            content = <Standby />;
+          case 'noLeader':
+            content = <NoLeader />;
             break;
           default:
             content = null;

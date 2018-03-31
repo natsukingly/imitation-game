@@ -8,8 +8,10 @@
     padding: 8px 10px;
     margin: 10px 10px 0;
     font-weight: bold;
-    /* width: 220px; */
+    flex: 1;
+
 }
+
 
 /* .Button:first-of-type {
     margin-left: 0;
@@ -38,9 +40,13 @@
   /* flex: 1; */
 }
 
+.Link a{
+  display: block;  
+}
+
 .GameMenu{
   width: 25%;
-
+  flex: none;
   height: 60px;
   margin: 10px 3%;
 }
@@ -48,6 +54,10 @@
 
 
 @media(min-width: 768px) {
+  .Button{
+    max-width: 300px;
+  }
+
   .Button:hover{
     background-color: #eee;
   }

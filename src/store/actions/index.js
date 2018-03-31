@@ -32,9 +32,10 @@ export {
   selectOption,
   getPlayerRanking,
   setPlayerReady,
-  moveToLastStage,
+  moveToFinalResult,
   moveToNextQuestion,
   getGameInfo,
   joinGame,
+  joinGameWithForce,
   exitGame,
 } from './game';

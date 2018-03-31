@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 
 import Aux from '../../../hoc/Aux/Aux';
+import noImage from '../../../assets/images/no-image.png';
+import HappyOverlay from '../../../assets/images/correct.png';
+import Logo from '../../../components/Logo/Logo';
+import Comments from '../../../components/Comments/Comments';
 import OptionAnswer from '../../../components/Option/OptionAnswer';
 import Button from '../../../components/UI/Button/Button';
 import User from '../../../components/User/User';
 // import Button from '../../components/UI/Button/Button';
-// import Spinner from '../../components/UI/Spinner/Spinner';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 // import Profile from '../../components/Profile/Profile';
 import classes from './Outcome.css';
 import * as actions from '../../../store/actions/index';
@@ -15,6 +19,7 @@ import * as actions from '../../../store/actions/index';
 class Options extends Component {
     componentDidMount (){
       this.props.setPresetOptions();
+
       // this.props.getPlayerRanking();
     }
 
@@ -22,8 +27,8 @@ class Options extends Component {
       this.props.moveToNextQuestion();
     }
 
-    moveToLastStageHandler = ( event ) => {
-      this.props.moveToLastStage();
+    moveToFinalResult = ( event ) => {
+      this.props.moveToFinalResult();
     }
 
     setPlayerReadyHandler = ( event ) => {
@@ -36,6 +41,7 @@ class Options extends Component {
       let result = null;
 
       if(this.props.output){
+
         const userId = this.props.output[this.props.cuid].output
 
 
@@ -43,24 +49,54 @@ class Options extends Component {
           case "correct":
             result = (
               <div>
-                <h2>正解</h2>
-                <p>オメデトウ</p>
+                <div className={classes.Overlay} style={{backgroundImage: 'url(' + HappyOverlay + ')'}}></div>
+                <h3 className={classes.Three}>3</h3>
+                <h3 className={classes.Two}>2</h3>
+                <h3 className={classes.One}>1</h3>
+                <div className={classes.ResultStatement}>
+                  <h2>正解</h2>
+                  <p>オメデトウ</p>
+                </div>
               </div>
             );
             break;
           case "dummy":
             result = (
               <div>
-                <h2>不正解</h2>
-                <p>...シッタカカヨ</p>
+                <h3 className={classes.Three}>3</h3>
+                <h3 className={classes.Two}>2</h3>
+                <h3 className={classes.One}>1</h3>
+                <div className={classes.ResultStatement}>
+                  <Logo size="large"/>
+                  <h2>不正解w</h2>
+                </div>
               </div>
             );
             break;
+          case this.props.cuid:
+              result = (
+                <div>
+                  <Comments outcome='self' />
+                  <h3 className={classes.Three}>3</h3>
+                  <h3 className={classes.Two}>2</h3>
+                  <h3 className={classes.One}>1</h3>
+                  <div className={classes.ResultStatement}>
+                    <h2>ナルシスト</h2>
+                    <p>自分大好きカヨ。。。</p>
+                  </div>
+                </div>
+              );
+              break;
           default:
             result = (
               <div>
-                <h2>{this.props.players[userId].name}</h2>
-                <p>さんの答えを選びました。</p>
+                <h3 className={classes.Three}>3</h3>
+                <h3 className={classes.Two}>2</h3>
+                <h3 className={classes.One}>1</h3>
+                <div className={classes.ResultStatement}>
+                  <h2>{this.props.players[userId].name}</h2>
+                  <p>さんの答えを選びました。</p>
+                </div>
               </div>
             );
         }
@@ -92,13 +128,18 @@ class Options extends Component {
 
         answers = (
           Object.keys(this.props.options).map((userId) => {
+            let photoURL = noImage;
+
+            if(this.props.players[userId].image !== ''){
+              photoURL = this.props.players[userId].image;
+            }
             return (
               <OptionAnswer
                 options={this.props.options}
                 userId={userId}
                 content={this.props.options[userId].input}
                 userName={this.props.players[userId].name}
-                userImage={this.props.players[userId].image}
+                userImage={photoURL}
                 key={userId}
               />
             );
@@ -114,6 +155,7 @@ class Options extends Component {
       if(this.props.players){
         userList = (
           Object.keys(this.props.players).map( (userId) => {
+
             if(this.props.players[userId].ready === false){
               pendingUser += 1;
               return (
@@ -153,9 +195,14 @@ class Options extends Component {
             trickedUserList = (
               yourOutcome.map( (uid) =>
                 {
+                  let photoURL = noImage;
+
+                  if(this.props.players[uid].image !== ''){
+                    photoURL = this.props.players[uid].image;
+                  }
                   return(
                     <div key={uid} className={classes.UserListItem}>
-                      <div style={{backgroundImage: 'url(' + this.props.players[uid].image + ')'}} className={classes.UserImage} alt="user_image"> </div>
+                      <div style={{backgroundImage: 'url(' + photoURL + ')'}} className={classes.UserImage} alt="user_image"> </div>
                       <p>{this.props.players[uid].name}</p>
                     </div>
                   );
@@ -215,14 +262,15 @@ class Options extends Component {
         )
       }
 
+
       let nextBtn = null;
       if(this.props.gameStage === this.props.gameLength){
         nextBtn = (
-          <NavLink to='/exit-game-to-result'>
-            <Button>結果画面</Button>
-          </NavLink>
+            <Button
+              clicked={this.moveToFinalResult}
+            >最終結果画面</Button>
         );
-      }else if(this.props.gameId === this.props.cuid){
+      }else if(this.props.leaderId === this.props.cuid){
         nextBtn = (
           <Button
             clicked={this.moveToNextQuestionHandler}
@@ -238,20 +286,22 @@ class Options extends Component {
             <div className={classes.Result}>
               {result}
             </div>
-            <h2 className={classes.SectionTitle}>みんなの回答</h2>
-            {answers}
-            <h2 className={classes.SectionTitle}>あなたの回答を選んだ人</h2>
-            <div className={classes.UserList}>
-              {trickedUserList}
-            </div>
-            <h2 className={classes.SectionTitle}>ランキング</h2>
-            <div className={classes.RankedUsers}>
-              {ranking}
-            </div>
-            <div className={classes.Forward}>
-              <Button
-                clicked={this.setPlayerReadyHandler}
-              >次に進む</Button>
+            <div className={classes.Content}>
+              <h2 className={classes.SectionTitle}>みんなの回答</h2>
+              {answers}
+              <h2 className={classes.SectionTitle}>あなたの回答を選んだ人</h2>
+              <div className={classes.UserList}>
+                {trickedUserList}
+              </div>
+              <h2 className={classes.SectionTitle}>ランキング</h2>
+              <div className={classes.RankedUsers}>
+                {ranking}
+              </div>
+              <div className={classes.Forward}>
+                <Button
+                  clicked={this.setPlayerReadyHandler}
+                >次に進む</Button>
+              </div>
             </div>
           </div>
         );
@@ -262,8 +312,11 @@ class Options extends Component {
             <div className={classes.Users}>
               {userList}
             </div>
+            <div className={classes.Loading}>
+              <Spinner />
+            </div>
             <h2 className={classes.SectionTitle}>Note</h2>
-            <p　className={classes.Note}>ホストは自由なタイミングで次のステージにゲームを進めることができます。</p>
+            <p　className={classes.Note}>ホスト({this.props.leader.name})は自由なタイミングで次のステージにゲームを進めることができます。</p>
             <div className={classes.Forward}>
               {nextBtn}
             </div>
@@ -283,9 +336,11 @@ class Options extends Component {
 const mapStateToProps = state => {
     return {
       cuid: state.user.id,
-      gameId: state.user.gameId,
+      gameId: state.game.id,
       players: state.game.players,
       playerStatus: state.game.playerStatus,
+      leader: state.game.players[state.game.leader],
+      leaderId: state.game.leader,
       gameStage: state.game.stage + 1,
       gameLength: state.game.info.length,
       output: state.game.output,
@@ -299,7 +354,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
       setPresetOptions: () => dispatch( actions.setPresetOptions()),
-      moveToLastStage: () => dispatch( actions.moveToLastStage()),
+      moveToFinalResult: () => dispatch( actions.moveToFinalResult()),
       moveToNextQuestion: () => dispatch( actions.moveToNextQuestion()),
       setPlayerReady: () => dispatch( actions.setPlayerReady()),
     }

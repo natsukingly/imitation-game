@@ -1,9 +1,19 @@
+
+.Loading{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px;
+}
+
+
+
 .SectionTitle{
-  max-width: 180px;
+  max-width: 300px;
   /* background-color: #f9f9f9; */
   border-bottom: solid 3px #aaa;
   position: relative;
-  margin: 0 auto 30px;
+  margin: 80px auto 30px;
   text-align: center;
   font-size: 16px;
   font-weight: 600;
@@ -27,15 +37,18 @@
 .Forward{
   display: flex;
   justify-content: center;
-  margin: 50px;
+  margin: 50px 0;
 }
 
 .Note{
-  max-width: 250px;
+  max-width: 300px;
   margin: 0 auto;
   text-align: center;
 }
 
+.LinkBtn{
+  width: 100%;
+}
 
 .Result{
   margin-top: 10px;
@@ -45,7 +58,10 @@
   justify-content: center;
   align-items: center;
   color: white;
+  position: relative;
 }
+
+
 
 .Result h2{
   font-size: 40px;
@@ -61,7 +77,7 @@
 }
 
 .UserList{
-  max-width: 200px;
+  max-width: 300px;
   margin: 0 auto;
 }
 
@@ -78,10 +94,11 @@
   margin-right: 10px;
   background-size: cover;
   background-position: center;
+  background-color: #eee;
 }
 
 .RankedUsers{
-  max-width: 200px;
+  max-width: 300px;
   margin: 0 auto;
 }
 
@@ -94,4 +111,85 @@
   font-weight: 600;
   font-size: 16px;
   margin-bottom: 5px;
+}
+
+.One, .Two, .Three, .ResultStatement{
+  /* display: none; */
+  position: absolute;
+  opacity: 0;
+  -webkit-transform: translate(-50%,-60%);
+  -moz-transform: translate(-50%,-60%);
+  -ms-transform: translate(-50%,-60%);
+  -o-transform: translate(-50%,-60%);
+  transform: translate(-50%,-60%);
+  animation-name: count;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  font-size: 30px;
+}
+
+.One, .Two, .Three{
+  padding-bottom: 20px;
+  margin: 0;
+  font-size: 50px;
+}
+
+.One{
+  animation-delay: 3s;
+}
+
+.Two{
+  animation-delay: 2s;
+}
+
+.Three{
+  animation-delay: 1s;
+}
+
+.ResultStatement{
+  animation-name: countStay;
+  animation-delay: 5s;
+  animation-fill-mode: forwards;
+  text-shadow: 0 0 5px black;
+}
+
+.ResultStatement h2{
+  margin: 0;
+}
+
+.ResultStatement p{
+  font-size: 16px;
+}
+
+.Overlay{
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  animation-name: countStay;
+  animation-fill-mode: forwards;
+  animation-delay: 7s;
+}
+
+.Content{
+  opacity: 0;
+  animation-name: countStay;
+  animation-fill-mode: forwards;
+  animation-delay: 7s;
+}
+
+@keyframes count {
+	0% { opacity: 0 }
+	90% { opacity: 1 }
+	100% { opacity: 0 }
+}
+
+@keyframes countStay {
+	0% { opacity: 0 }
+	90% { opacity: 1 }
+	100% { opacity: 1 }
 }

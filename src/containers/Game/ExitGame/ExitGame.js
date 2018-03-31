@@ -8,6 +8,7 @@ import * as actions from '../../../store/actions/index';
 class ExitGame extends Component {
     componentDidMount () {
         this.props.exitGame();
+        console.log('exitGamepage')
     }
 
     render () {

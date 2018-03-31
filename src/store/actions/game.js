@@ -7,20 +7,17 @@ export const checkGameStatus = () => {
 
   return dispatch => {
     const cuid = firebase.auth().currentUser.uid;
-    // console.log('cuid:' + cuid);
 
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
       {
         const gameId = snapshot.val().gameId
-        firebase.database().ref('/users/' + cuid ).once('value').then(leaderSnapshot =>
+        firebase.database().ref('/games/' + gameId )
+        .on('value', snapshot =>
           {
-            const leader = leaderSnapshot.val()
-            firebase.database().ref('/games/' + gameId )
-            .on('value', snapshot =>
-              {
-                dispatch(checkGameStatusSuccess(snapshot.val(), leader))
-              }
-            )
+            if(snapshot.val() === null){
+            } else{
+              dispatch(checkGameStatusSuccess(snapshot.val()))
+            }
           }
         )
       }
@@ -36,8 +33,10 @@ export const checkUserGamingStatus = () => {
       const cuid = firebase.auth().currentUser.uid;
         firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
           {
-            const isGaming = snapshot.val().isGaming
-            dispatch(checkUserGamingStatusSuccess(isGaming))
+            if(snapshot.val() !== null){
+              const isGaming = snapshot.val().isGaming
+              dispatch(checkUserGamingStatusSuccess(isGaming))
+            }
           }
         )
       }
@@ -55,18 +54,24 @@ export const checkUserGamingStatusSuccess = (isGaming) => {
 export const checkPlayerStatus = () => {
 
   return dispatch => {
-    const currentUser = firebase.auth().currentUser;
-    const cuid = currentUser.uid;
-    const userIsGaming = currentUser.isGaming
+    const cuid = firebase.auth().currentUser.uid;
+
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
       {
-        const gameId = snapshot.val().gameId
-        firebase.database().ref('/games/' + gameId + '/players/' + cuid ).once('value').then(playerSnapshot =>
-          {
-            const playerStatus = playerSnapshot.val().ready
-            dispatch(checkPlayerStatusSuccess(playerStatus, userIsGaming))
-          }
-        )
+        const currentUser = snapshot.val()
+        const userIsGaming = currentUser.isGaming
+        if(userIsGaming){
+          const gameId = currentUser.gameId
+          firebase.database().ref('/games/' + gameId + '/players/' + cuid ).once('value').then(playerSnapshot =>
+            {
+              if(playerSnapshot.val() !== null){
+                const playerStatus = playerSnapshot.val().ready
+                dispatch(checkPlayerStatusSuccess(playerStatus, userIsGaming))
+              } else {
+              }
+            }
+          )
+        }
       }
     )
   };
@@ -84,10 +89,16 @@ export const checkPlayerStatusSuccess = (playerStatus) => {
 export const startGame = (status) => {
   return dispatch => {
     const cuid = firebase.auth().currentUser.uid;
-    firebase.database().ref('/games/' + cuid + '/info' ).update({status: 'question'})
-    .then(
-      dispatch(startGameSuccess())
+    firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
+      {
+        const gameId = snapshot.val().gameId;
+        firebase.database().ref('/games/' + gameId + '/info' ).update({status: 'question'})
+        .then(
+          dispatch(startGameSuccess())
+        )
+      }
     )
+
   }
 }
 
@@ -97,11 +108,35 @@ export const joinGame = (gameId) => {
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
       {
         const currentUser = snapshot.val();
-        firebase.database().ref('/users/' + cuid ).update({isGaming: true, gameId: gameId})
-        firebase.database().ref('/games/' + gameId + '/players/' + cuid ).set({image: currentUser.image, leader: false, name: currentUser.name, ready: false})
+        const gameEx = snapshot.val().gameEx + 1
+        firebase.database().ref('/users/' + cuid ).update({isGaming: true, gameId: gameId, gameEx: gameEx})
+        firebase.database().ref('/games/' + gameId + '/players/' + cuid ).set({image: currentUser.image, leader: false, name: currentUser.name, ready: false, active: true})
         firebase.database().ref('/games/' + gameId + '/input/' + cuid ).set({input: ''})
         firebase.database().ref('/games/' + gameId + '/output/' + cuid ).set({output: ''})
         firebase.database().ref('/games/' + gameId + '/score/' + cuid ).set({score: 0, lastScore: 0, uid: cuid})
+        .then(
+          dispatch(joinGameSuccess())
+        )
+      }
+    )
+  }
+}
+
+export const joinGameWithForce = (nextGameId) => {
+  return dispatch => {
+    const cuid = firebase.auth().currentUser.uid;
+    firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
+      {
+        const currentUser = snapshot.val();
+        const currentGameId = snapshot.val().gameId;
+        const gameEx = snapshot.val().gameEx + 1;
+        firebase.database().ref('/games/' + currentGameId + '/players/' + cuid).update({active: false})
+
+        firebase.database().ref('/users/' + cuid ).update({isGaming: true, gameId: nextGameId, gameEx: gameEx})
+        firebase.database().ref('/games/' + nextGameId + '/players/' + cuid ).set({image: currentUser.image, leader: false, name: currentUser.name, ready: false})
+        firebase.database().ref('/games/' + nextGameId + '/input/' + cuid ).set({input: ''})
+        firebase.database().ref('/games/' + nextGameId + '/output/' + cuid ).set({output: ''})
+        firebase.database().ref('/games/' + nextGameId + '/score/' + cuid ).set({score: 0, lastScore: 0, uid: cuid})
         .then(
           dispatch(joinGameSuccess())
         )
@@ -196,25 +231,19 @@ export const moveToNextQuestionSuccess = () => {
   };
 }
 
-export const moveToLastStage = (nextStage) => {
+export const moveToFinalResult = () => {
   return dispatch => {
-    // const cuid = firebase.auth().currentUser.uid;
-    // firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
-    //   {
-    //     const gameId = snapshot.val().gameId
-    //     firebase.database().ref('/games/' + gameId ).once('value').then(gameSnapshot =>
-    //       {
-    //         const players = gameSnapshot.val().players;
-    //         Object.keys(players).map( (playerId) =>
-    //           firebase.database().ref('/games/' + gameId + '/players/' + playerId ).update({ready: false})
-    //         )
-    //       }
-    //     )
-    //     .then(
-    //       firebase.database().ref('/games/' + gameId + '/info' ).update({status: nextStage})
-    //     )
-    //   }
-    // )
+    const cuid = firebase.auth().currentUser.uid;
+    firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
+      {
+        const gameId = snapshot.val().gameId;
+        firebase.database().ref('/games/' + gameId + '/info' ).update({status: 'finalResult'})
+
+        .then(
+          dispatch(moveForwardSuccess('finalResult'))
+        )
+      }
+    )
   }
 }
 
@@ -238,7 +267,6 @@ export const getGameInfo = (gameId) => {
   return dispatch => {
     firebase.database().ref('/games/' + gameId ).once('value').then(gameSnapshot =>
       {
-      // console.log("aiuoe")
       const gameInfo = gameSnapshot.val();
       return(
         dispatch(getGameInfoSuccess(gameInfo))
@@ -255,34 +283,34 @@ export const getGameInfoSuccess = (gameInfo) => {
   };
 }
 
-// export const getGameInfo = (gameId) => {
-//   return dispatch => {
-//     firebase.database().ref('/games/' + gameId ).once('value').then(gameSnapshot =>
-//       {
-//       const gameInfo = gameSnapshot.val();
-//       return(
-//         dispatch(getGameInfoSuccess(gameInfo))
-//         )
-//       }
-//     )
-//   }
-// }
-//
-// export const getGameInfoSuccess = (gameInfo) => {
-//   return{
-//     type: actionTypes.GAME_GET_INFO_SUCCESS,
-//     gameInfo: gameInfo,
-//   };
-// }
 export const exitGame = () => {
-  // console.log('authlogout');
+
   return dispatch => {
-      const user = firebase.auth().currentUser;
-      if(user.uid === user.gameId){
-        firebase.database().ref('/games/' + user.uid + '/info/').update({leader: 'inactive'})
+      const cuid = firebase.auth().currentUser.uid;
+
+      firebase.database().ref('/users/' + cuid).once('value').then(
+        snapshot =>
+        {
+        const user = snapshot.val()
+        firebase.database().ref('/games/' + user.gameId ).off()
+        firebase.database().ref('/games/' + user.gameId + '/players/' + cuid).update({active: false})
+        if(user.leader === true){
+          firebase.database().ref('/games/' + user.gameId + '/info').once('value').then(
+            gameSnapshot =>
+              {
+                if(gameSnapshot.val().status !== 'finalResult'){
+                  firebase.database().ref('/games/' + cuid + '/info/').update({leader: false, status: 'noLeader'})
+                }
+              }
+          )
+        }
+        firebase.database().ref('/users/' + cuid).update({gameId: '', isGaming: false, leader: false})
+        .then( dispatch(exitGameSuccess()));
+
       }
-      firebase.database().ref('/users/' + user.uid).update({gameId: '', isGaming: false})
-      .then( dispatch(exitGameSuccess()));
+
+
+    )
   };
 };
 
@@ -306,7 +334,6 @@ export const setQuestion = () => {
             firebase.database().ref('/games/' + gameId + '/info').update({currentQuestion: questionList[stage]})
             .then(
               firebase.database().ref('/decks/imitationGame/' + selectedQuestion ).once('value').then( questionSnapshot => {
-                console.log(questionSnapshot.val());
                 dispatch(setQuestionSuccess(questionSnapshot))
               })
             )
@@ -326,7 +353,6 @@ export const setPresetOptions = () => {
         firebase.database().ref('/games/' + gameId ).once('value').then(gameSnapshot =>
           {
             const targetQuestion = gameSnapshot.val().info.currentQuestion;
-            console.log(targetQuestion)
             firebase.database().ref('/decks/imitationGame/' + targetQuestion ).once('value').then( questionSnapshot => {
               dispatch(setPresetOptionsSuccess(questionSnapshot.val().answer, questionSnapshot.val().fake))
             })
@@ -357,7 +383,6 @@ export const selectOption = (optionId) => {
         .then(() => {
             switch(optionId){
               case "correct":
-                console.log("you chose a correct option");
                 firebase.database().ref('/games/' + gameId + '/score/' + cuid)
                 .once('value').then( scoreSnapshot =>
                   {
@@ -368,7 +393,6 @@ export const selectOption = (optionId) => {
                 )
                 break;
               case "dummy":
-                console.log("you chose a dummy option");
                 firebase.database().ref('/games/' + gameId + '/score/' + cuid)
                 .once('value').then( scoreSnapshot =>
                   {
@@ -379,7 +403,6 @@ export const selectOption = (optionId) => {
                 )
                 break;
               default:
-                console.log("you chose an option by user");
                 firebase.database().ref('/games/' + gameId + '/score/' + optionId)
                 .once('value').then( scoreSnapshot =>
                   {
@@ -413,7 +436,6 @@ export const setQuestionSuccess = (questionSnapshot) => {
 
 export const submitInput = (input) => {
   return dispatch => {
-    // console.log(input);
     const cuid = firebase.auth().currentUser.uid;
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
       {
@@ -440,7 +462,6 @@ export const submitInputSuccess = () => {
 
 export const setPlayerReady = () => {
   return dispatch => {
-    // console.log(input);
     const cuid = firebase.auth().currentUser.uid;
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
       {
@@ -462,16 +483,16 @@ export const playerIsReady = () => {
 }
 
 export const checkGameStatusSuccess = (game, leader) => {
+
   return{
     type: actionTypes.GAME_CHECK_STATUS_SUCCESS,
     info: game,
-    status: game.status,
+    status: game.info.status,
     leader: leader
   };
 }
 
 export const createGameStart = () => {
-  console.log('createGameStart')
   return{
     type: actionTypes.GAME_CREATE
   };
@@ -485,6 +506,8 @@ export const createGame = (round) => {
     .then( snapshot =>
       {
         const user = snapshot.val();
+        const gameEx = user.gameEx + 1
+        const gameId = uid + gameEx
         // array creation
         const totalQuestions = 3
         const indexArray = Array.from(Array(totalQuestions).keys())
@@ -502,26 +525,6 @@ export const createGame = (round) => {
         }
         // array shuffle code
         const questions = shuffleAry(indexArray).slice(0, round)
-        // console.log(questions);
-          // var code = Math.random().toString(36).substr(2, 4);
-          var gameData = {
-            length: round,
-            questions: questions,
-            currentQuestion: '',
-            games: '',
-            deck: 'imitationGame',
-            member: 1,
-            stage: 0,
-            status: 'init',
-            leader: 'active'
-          }
-
-          var playerData = {
-              name: user.name,
-              image: user.image,
-              ready: false,
-              leader: true
-          }
 
           var d = new Date();
           var year  = d.getFullYear();
@@ -530,23 +533,45 @@ export const createGame = (round) => {
           var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
           var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
           var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-          var imitationGame = year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec ;
+          var GameCreatedAt = year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec ;
+
+
+          var gameData = {
+            gameId: gameId,
+            length: round,
+            questions: questions,
+            currentQuestion: '',
+            games: '',
+            deck: 'imitationGame',
+            member: 1,
+            stage: 0,
+            status: 'init',
+            leader: uid,
+            createdAt: GameCreatedAt
+          }
+
+          var playerData = {
+              name: user.name,
+              image: user.image,
+              ready: false,
+              leader: true,
+              active: true
+          }
+
 
           // setData['/players/' + user.uid] = playerData;
-          firebase.database().ref('/games/' + uid ).set('')
-          firebase.database().ref('/games/' + uid + '/info').set(gameData)
+          firebase.database().ref('/games/' + gameId ).set('')
+          firebase.database().ref('/games/' + gameId + '/info').set(gameData)
           .then(
-          firebase.database().ref('/games/' + uid + '/players/' + uid).set(playerData))
+          firebase.database().ref('/games/' + gameId + '/players/' + uid).set(playerData))
           .then(
-          firebase.database().ref('/games/' + uid + '/input/' + uid).set({input: false}))
+          firebase.database().ref('/games/' + gameId + '/input/' + uid).set({input: false}))
           .then(
-          firebase.database().ref('/games/' + uid + '/output/' + uid).set({output: false}))
+          firebase.database().ref('/games/' + gameId + '/output/' + uid).set({output: false}))
           .then(
-          firebase.database().ref('/games/' + uid + '/score/' + uid).set({uid: uid, score: 0, lastScore: 0}))
+          firebase.database().ref('/games/' + gameId + '/score/' + uid).set({uid: uid, score: 0, lastScore: 0}))
           .then(
-          firebase.database().ref('/users/' + uid).update({gameId: uid, isGaming: true}))
-          .then(
-           firebase.database().ref('decks/playedData').push({imitationGame}))
+          firebase.database().ref('/users/' + uid).update({gameId: gameId, isGaming: true, gameEx: gameEx, leader: true}))
           .then(
             dispatch(createGameSuccess())
           )
@@ -560,7 +585,6 @@ export const createGame = (round) => {
 
 
 export const createGameSuccess = () => {
-  console.log("yeah");
   return {
     type: actionTypes.GAME_CREATE_SUCCESS,
   }

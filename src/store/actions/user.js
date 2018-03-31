@@ -8,20 +8,23 @@ export const authStart = () => {
 };
 
 export const authSuccess = (user) => {
+
     return {
         type: actionTypes.AUTH_SUCCESS,
         loading: false,
-        user: user
+        user: user,
     };
 };
 
 export const authSuccessGame = (user, gameId) => {
+
     return {
         type: actionTypes.AUTH_SUCCESS_GAME,
         loading: false,
         user: user,
         isGaming: true,
-        gameId: gameId
+        gameId: gameId,
+
     };
 };
 
@@ -93,8 +96,10 @@ export const auth = (email, password) => {
                     image: '',
                     signin: 1,
                     isGaming: false,
+                    gameEx: 0,
                     gameId: '',
-                    provider: 'email'
+                    provider: 'email',
+                    leader: false,
                   });
                   firebase.database().ref('users/' + user.uid ).once('value')
                   .then(snapshot =>
@@ -119,14 +124,24 @@ export const authViaTwitter = () => {
             // console.log(snapshot)
             if(snapshot.val() === null){
               const uid = data.user.uid
+              console.log(data.user)
               firebase.database().ref('users/' + uid).set({
                 name: data.user.displayName,
-                image: '',
+                id: uid,
+                image: data.user.photoURL,
                 signin: 1,
+                gameEx: 0,
                 gameId: '',
                 isGaming: false,
-                provider: 'twitter'
+                provider: 'twitter',
+                leader: false,
               })
+              .then(
+                firebase.database().ref('users/' + data.user.uid ).once('value')
+                  .then( newSnapshot =>
+                    dispatch(authSuccess(newSnapshot.val()))
+                  )
+              )
             }else{
               dispatch(authSuccess(snapshot.val()))
               firebase.database().ref('users/' + data.user.uid).update({ signin: snapshot.val().signin + 1, provider: 'twitter'})
@@ -167,7 +182,9 @@ export const checkUserStatus = () => {
                       signin: 2,
                       isGaming: false,
                       gameId: '',
-                      provider: 'unknown'
+                      provider: 'unknown',
+                      leader: false,
+                      gameEx: 0,
                     }).then(
                       firebase.database().ref('users/' + user.uid ).once('value')
                       .then(
@@ -188,49 +205,6 @@ export const checkUserStatus = () => {
     };
 };
 
-// export const checkUserStatus = () => {
-//     return dispatch => {
-//         firebase.auth().onAuthStateChanged((user) => {
-//           if (user) {
-//             firebase.database().ref('users/' + user.uid ).once('value')
-//               .then(
-//                 (snapshot) => {
-//                 const isGaming = snapshot.val().isGaming
-//                 const gameId = snapshot.val().gameId
-//                 console.log('im there');
-//                 if(isGaming){
-//                   dispatch(authSuccessGame(user,gameId));
-//                 }
-//                 else{
-//                   dispatch(authSuccess(user));
-//                 }
-//               })
-//           } else {
-//             dispatch(authFail());
-//           }
-//         })
-//     };
-// };
-
-// export const exitGame = () => {
-//   // console.log('authlogout');
-//   return dispatch => {
-//       const user = firebase.auth().currentUser;
-//       if(user.uid === user.gameId){
-//         firebase.database().ref('/games/' + user.uid + '/info/').update({leader: 'inactive'})
-//       }
-//       firebase.database().ref('/users/' + user.uid).update({gameId: '', isGaming: false})
-//       .then( dispatch(exitGameSuccess()));
-//   };
-// };
-
-// export const exitGameSuccess = (game, user) => {
-//   return {
-//     type: actionTypes.USER_GAME_EXIT_SUCCESS
-//   }
-// }
-
-
 
 export const uploadImage = (file) => {
   return dispatch => {
@@ -239,7 +213,7 @@ export const uploadImage = (file) => {
         const storageRef = firebase.storage().ref();
         // Create a reference to 'images/mountains.jpg'
         const imageRef = storageRef.child('userImages/' + user.uid + '.jpg');
-        imageRef.put(file).then(function(snapshot) {
+        imageRef.putString(file, 'data_url').then(function(snapshot) {
           firebase.database().ref('users/' + user.uid ).update({
             image: snapshot.downloadURL
           })

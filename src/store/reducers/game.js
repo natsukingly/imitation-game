@@ -54,15 +54,17 @@ const gameSetPresetOptionsSuccess = (state, action) => {
 };
 
 const gameCheckStatusSuccess = (state, action) => {
+    console.log(action)
     return updateObject( state, {
+        id: action.info.info.gameId,
         info: action.info.info,
+        leader: action.info.info.leader,
         players: action.info.players,
         input: action.info.input,
         output: action.info.output,
         score: action.info.score,
         status: action.info.info.status,
         stage: action.info.info.stage,
-        leader: action.leader
      } );
 };
 

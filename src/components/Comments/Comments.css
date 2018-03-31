@@ -1,0 +1,140 @@
+.Comments{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.Comments span{
+  transform:translate(0);
+  padding-left: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: translate(100%);
+  position: absolute;
+  animation-timing-function: linear;
+  animation-name: marquee;
+  animation-iteration-count: infinite;
+  color: #eee;
+}
+
+.C1{
+  animation-delay: 6s;
+  animation-duration: 10s;
+  top: 5%;
+
+}
+.C2{
+  animation-delay: 6s;
+  animation-duration: 8s;
+  top: 10%;
+  font-size: 20px;
+}
+
+.C3{
+  animation-delay: 6s;
+  animation-duration: 10s;
+  top: 30%;
+  font-size: 12px;
+}
+.C4{
+  animation-delay: 8s;
+  animation-duration: 6s;
+  top: 60%;
+}
+.C5{
+  animation-delay: 6s;
+  animation-duration: 10s;
+  top: 65%;
+  font-size: 20px;
+}
+.C6{
+  animation-delay: 8s;
+  animation-duration: 10s;
+}
+.C7{
+  animation-delay: 6s;
+  animation-duration: 8s;
+  top: 75%;
+}
+
+.C8{
+  animation-delay: 8s;
+  animation-duration: 10s;
+  top: 90%;
+
+}
+.C9{
+  animation-delay: 12s;
+  animation-duration: 6s;
+  top: 5%;
+}
+.C10{
+  animation-delay: 12s;
+  animation-duration: 10s;
+  top: 15%;
+  font-size: 12px;
+}
+.C11{
+  animation-delay: 14s;
+  animation-duration: 8s;
+  top: 35%;
+  font-size: 20px;
+}
+.C12{
+  animation-delay: 12s;
+  animation-duration: 10s;
+  top: 60%;
+}
+
+.C13{
+  animation-delay: 14s;
+  animation-duration: 10s;
+  top: 80%;
+}
+.C13{
+  animation-delay: 12s;
+  animation-duration: 6s;
+  top: 90%;
+  font-size: 20px;
+}
+.C15{
+  animation-delay: 12s;
+  animation-duration: 10s;
+  top: 95%;
+}
+.C16{
+  animation-delay: 16s;
+  animation-duration: 10s;
+  top: 5%;
+  font-size: 20px;
+}
+.C17{
+  animation-delay: 16s;
+  animation-duration: 10s;
+  top: 20%;
+}
+
+.C18{
+  animation-delay: 16s;
+  animation-duration: 6s;
+  top: 25%;
+  font-size: 20px;
+}
+.C19{
+  animation-delay: 16s;
+  animation-duration: 10s;
+  top: 60%;
+}
+.C20{
+  animation-delay: 16s;
+  animation-duration: 8s;
+  top: 80%;
+  font-size: 12px;
+}
+
+@keyframes marquee {
+	from {transform:translate(0%);} to {transform:translate(-100%);}
+}
