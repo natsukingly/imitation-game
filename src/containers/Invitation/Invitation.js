@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-//
+import MetaTags from 'react-meta-tags';
+
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Button from '../../components/UI/Button/Button';
 import Aux from '../../hoc/Aux/Aux';
@@ -37,10 +38,12 @@ class Invitation extends Component {
           content = <div className={classes.Invitation}><Spinner /></div>;
         }
         else if(this.props.isGaming && this.props.gameId === this.props.match.params.id){
-          content = <Redirect to="/game"/>;
+          content = <Redirect to="/loading"/>;
         }
         else if(this.state.joined === true){
-          content = <Redirect to="/game"/>;
+          content = <Redirect to="/loading"/>;
+
+
         }
 
         else if(this.props.isGaming && this.props.invitationInfo && this.props.invitationInfo.info.status === 'init'){
@@ -52,8 +55,8 @@ class Invitation extends Component {
               </h2>
               <p>のゲームに参加しますか？</p>
               <p className={classes.Warning}>「はい」を選択すると今参加中のゲームから強制退場させられます。</p>
-              <Button clicked={this.forceSubmitHandler}>はい</Button>
-              <Link to="/"><Button>いいえ</Button></Link>
+              <Button clicked={this.forceSubmitHandler} btnType="Confirmation">はい</Button>
+              <Link to="/"><Button btnType="Confirmation">いいえ</Button></Link>
             </div>
           );
         }
@@ -65,15 +68,15 @@ class Invitation extends Component {
                 {this.props.invitationInfo.players[this.props.invitationInfo.info.leader].name}
               </h2>
               <p>のゲームに参加しますか？</p>
-              <Button clicked={this.submitHandler}>はい</Button>
-              <Link to="/"><Button>いいえ</Button></Link>
+              <Button clicked={this.submitHandler} btnType="Confirmation">はい</Button>
+              <Link to="/"><Button btnType="Confirmation">いいえ</Button></Link>
             </div>
           );
         } else if(this.props.invitationInfo) {
           content = (
             <div className={classes.Invitation}>
               <p>このゲームの受付は終了しました。</p>
-              <Link to="/"><Button>戻る</Button></Link>
+              <Link to="/"><Button btnType="Confirmation">戻る</Button></Link>
             </div>
           );
         }
@@ -81,6 +84,12 @@ class Invitation extends Component {
 
         return (
           <Aux>
+            <MetaTags>
+              <title>IMITATION GAMEの挑戦状</title>
+              <meta property="og:title" content="IMITATION GAMEの挑戦状" />
+              <meta property="og:url" content={window.location.href} />
+              <meta name="twitter:site" content={window.location.href} />
+            </MetaTags>
             {content}
           </Aux>
         );

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 
 
+import Aux from '../../hoc/Aux/Aux';
+import Modal from '../../components/UI/Modal/Modal';
+import Backdrop from '../../components/UI/Backdrop/Backdrop';
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Profile from '../../components/Profile/Profile';
@@ -14,6 +17,17 @@ class Home extends Component {
 
     }
 
+    state = {
+      showBackdrop: false,
+      showModal: false,
+    }
+    modalClosedHandler = () => {
+        this.setState( { showModal: false, showBackdrop: false } );
+    }
+
+    modalOpenedHandler = () => {
+        this.setState( { showModal: true, showBackdrop: true } );
+    }
 
     render () {
 
@@ -25,10 +39,10 @@ class Home extends Component {
               <NavLink to='/game-menu' activeClassName={classes.ManuLink}>
                 <Button btnType="Menu">ゲームに戻る</Button>
               </NavLink>
-              <NavLink to='/exit-game' activeClassName={classes.ManuLink}>
-                <Button btnType="Menu">ゲームを止める</Button>
-              </NavLink>
-              <NavLink to='/game-menu' activeClassName={classes.ManuLink}>
+              <div className={classes.MenuLink}>
+                <Button btnType="Menu" clicked={this.modalOpenedHandler}>ゲームを止める</Button>
+              </div>
+              <NavLink to='/rules' activeClassName={classes.ManuLink}>
                 <Button btnType="Menu">ルールの説明</Button>
               </NavLink>
             </div>
@@ -39,23 +53,49 @@ class Home extends Component {
               <NavLink to='/game-menu' activeClassName={classes.ManuLink}>
                 <Button btnType="Menu">ゲームを作成</Button>
               </NavLink>
-              <NavLink to='/game-menu' activeClassName={classes.ManuLink}>
+              <NavLink to='/rules' activeClassName={classes.ManuLink}>
                 <Button btnType="Menu">ルールの説明</Button>
               </NavLink>
             </div>
           );
         }
         let profile = null;
-        if(this.props.isGaming !== true){
+        if(this.props.id){
           profile = (
             <Profile />
           );
-        } else if (this.props.isGaming === true){
-          profile = (
-            <div className={classes.Note}>
-              <h2 className={classes.SectionTitle}>NOTE</h2>
-              <p>ゲーム中はプロフィールを編集できません。</p>
-            </div>
+        }
+        let quitGameModal = null;
+
+        if(this.props.isGaming && this.props.isLeader){
+          quitGameModal = (
+            <Aux>
+              <Backdrop show={this.state.showBackdrop} clicked={this.modalClosedHandler}/>
+              <Modal
+                  show={this.state.showModal}
+                  modalClosed={this.modalClosedHandler}>
+                  <p>あなたは現在ゲームのホストです。ホストが退場すると、ゲーム自体が強制終了されます。<br/>本当にゲームを終了していいですか。</p>
+                  <div className={classes.ModalBtnGroup}>
+                    <Button btnType="AsLink"><Link to='/exit-game'>はい</Link></Button>
+                    <Button clicked={this.modalClosedHandler}>いいえ</Button>
+                  </div>
+              </Modal>
+            </Aux>
+          )
+        } else if (this.props.isGaming){
+          quitGameModal = (
+            <Aux>
+              <Backdrop show={this.state.showBackdrop} clicked={this.modalClosedHandler}/>
+              <Modal
+                  show={this.state.showModal}
+                  modalClosed={this.modalClosedHandler}>
+                  <p>本当にゲームを終了していいですか。</p>
+                  <div className={classes.ModalBtnGroup}>
+                    <Button btnType="AsLink"><Link to='/exit-game'>はい</Link></Button>
+                    <Button clicked={this.modalClosedHandler}>いいえ</Button>
+                  </div>
+              </Modal>
+            </Aux>
           )
         }
 
@@ -68,7 +108,7 @@ class Home extends Component {
 
         if (this.props.loading) {
           content = (
-            <div>
+            <div className={classes.Loading}>
               <Spinner />
             </div>
           );
@@ -77,6 +117,7 @@ class Home extends Component {
         return (
           <div>
             {content}
+            {quitGameModal}
           </div>
         );
     }
@@ -88,6 +129,7 @@ const mapStateToProps = state => {
         id: state.user.id,
         name: state.user.name,
         image: state.user.image,
+        isLeader: state.user.leader,
         isGaming: state.game.userIsGaming,
         loading: state.user.loading
     };

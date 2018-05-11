@@ -19,6 +19,7 @@ const profileImage = ( props ) => {
 
     return (
         <div className={classes.ProfileImageBox}>
+          <p>お気に入りのドヤ顔を設定しよう！</p>
           <CloudIcon name={profileImage} clicked={props.clicked}/>
           <input type="file" name="UploadImageInput" onChange={props.changed} className={classes.Input} accept="image/x-png,image/gif,image/jpeg" />
           <div style={{backgroundImage: 'url(' + PhotoURL + ')'}} className={classes.ProfileImage} alt="user_image"> </div>

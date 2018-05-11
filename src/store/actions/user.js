@@ -82,6 +82,7 @@ export const auth = (email, password) => {
                     dispatch(authSuccess(snapshot.val()))
                   )
                 })
+
           })
 
 
@@ -100,6 +101,7 @@ export const auth = (email, password) => {
                     gameId: '',
                     provider: 'email',
                     leader: false,
+                    edited: false
                   });
                   firebase.database().ref('users/' + user.uid ).once('value')
                   .then(snapshot =>
@@ -124,7 +126,7 @@ export const authViaTwitter = () => {
             // console.log(snapshot)
             if(snapshot.val() === null){
               const uid = data.user.uid
-              console.log(data.user)
+              // console.log(data.user)
               firebase.database().ref('users/' + uid).set({
                 name: data.user.displayName,
                 id: uid,
@@ -135,6 +137,7 @@ export const authViaTwitter = () => {
                 isGaming: false,
                 provider: 'twitter',
                 leader: false,
+                edited: true
               })
               .then(
                 firebase.database().ref('users/' + data.user.uid ).once('value')
@@ -185,6 +188,7 @@ export const checkUserStatus = () => {
                       provider: 'unknown',
                       leader: false,
                       gameEx: 0,
+                      edited: false,
                     }).then(
                       firebase.database().ref('users/' + user.uid ).once('value')
                       .then(
@@ -208,17 +212,28 @@ export const checkUserStatus = () => {
 
 export const uploadImage = (file) => {
   return dispatch => {
-        dispatch(updateStart());
-        const user = firebase.auth().currentUser;
-        const storageRef = firebase.storage().ref();
-        // Create a reference to 'images/mountains.jpg'
-        const imageRef = storageRef.child('userImages/' + user.uid + '.jpg');
-        imageRef.putString(file, 'data_url').then(function(snapshot) {
-          firebase.database().ref('users/' + user.uid ).update({
-            image: snapshot.downloadURL
-          })
-          .then(dispatch(getUpdatedValue()))
-        })
+    dispatch(updateStart());
+    const user = firebase.auth().currentUser;
+    const storageRef = firebase.storage().ref();
+    // Create a reference to 'images/mountains.jpg'
+    const imageRef = storageRef.child('userImages/' + user.uid + '.jpg');
+    imageRef.putString(file, 'data_url').then(function(snapshot) {
+      firebase.database().ref('users/' + user.uid ).update({
+        image: snapshot.downloadURL, edited: true
+      })
+      .then(dispatch(getUpdatedValue()))
+      .then(
+        firebase.database().ref('users/' + user.uid ).once('value').then(
+          userSnapshot => {
+            const isGaming = userSnapshot.val().isGaming;
+            if(isGaming){
+              firebase.database().ref('games/' + userSnapshot.val().gameId + '/players/' + user.uid )
+              .update({image: snapshot.downloadURL})
+            }
+          }
+        )
+      )
+    })
   };
 };
 
@@ -227,10 +242,21 @@ export const updateName = (name) => {
   return dispatch => {
       dispatch(updateStart());
       firebase.database().ref('users/' + user.uid ).update(
-        {name: name}
+        {name: name, edited: true}
       )
       .then(
         dispatch(getUpdatedValue())
+      )
+      .then(
+        firebase.database().ref('users/' + user.uid ).once('value').then(
+          userSnapshot => {
+            const isGaming = userSnapshot.val().isGaming;
+            if(isGaming){
+              firebase.database().ref('games/' + userSnapshot.val().gameId + '/players/' + user.uid )
+              .update({name: name})
+            }
+          }
+        )
       )
   };
 };

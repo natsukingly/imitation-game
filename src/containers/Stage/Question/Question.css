@@ -7,9 +7,23 @@
 }
 
 
+.Hint{
+  margin: 30px 10px;
+  text-align: center;
+  color: #696969;
+
+}
+
+@media(min-width: 768px){
+  .Hint{
+    max-width: 300px;
+    margin: 30px auto;
+  }
+}
 
 .Question{
-  margin-top: 100px;
+
+  margin-top: 70px;
 }
 
 /* .Question form {
@@ -19,11 +33,18 @@
 
 .QuestionBody{
   min-height: 24px;
+  font-weight: 600;
+  margin: 10px 10px 0;
+
 }
 
 @media(min-width: 768px){
   .Question{
     margin-top: 150px;
+  }
+  .QuestionBody{
+    max-width: 300px;
+    margin: 10px auto;
   }
 }
 
@@ -35,19 +56,22 @@
 
 
 .SectionTitle{
-  max-width: 300px;
+  margin: 80px 10px 30px;
   /* background-color: #f9f9f9; */
   border-bottom: solid 3px #aaa;
   position: relative;
-  margin: 80px auto 30px;
+
   text-align: center;
-  font-size: 16px;
+  font-size: 26px;
   font-weight: 600;
   padding: 12px;
 }
 
-.SectionTitle:not(:first-child){
-  margin: 80px auto 30px;
+@media(min-width: 768px){
+  .SectionTitle{
+    max-width: 300px;
+    margin: 80px auto 30px;
+  }
 }
 
 .SectionTitle:after {
@@ -67,14 +91,27 @@
 }
 
 .Note{
-  max-width: 250px;
-  margin: 0 auto;
+  margin: 0 10px;
   text-align: center;
 }
 
+@media(min-width: 768px){
+  .Note{
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
 .Users{
   display: flex;
   justify-content: space-around;
-  max-width: 300px;
-  margin: 0 auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 0 10px;
+}
+
+@media(min-width: 768px){
+  .Users{
+    max-width: 300px;
+    margin: 0 auto;
+  }
 }

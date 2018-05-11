@@ -1,0 +1,9 @@
+.ToTopLink{
+  display: block;
+  text-align: center;
+  width: 130px;
+  border: 1px solid #aaa;
+  padding: 5px 10px;
+  margin: 20px auto 30px;
+  border-radius: 3px;
+}

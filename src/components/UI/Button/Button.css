@@ -9,9 +9,19 @@
     margin: 10px 10px 0;
     font-weight: bold;
     flex: 1;
+    min-height: 40px;
 
 }
 
+.Confirmation{
+  min-width: 100px;
+}
+
+
+.MsgSubmit{
+  flex: none;
+  margin: 5px 10px 0;
+}
 
 /* .Button:first-of-type {
     margin-left: 0;
@@ -25,6 +35,32 @@
     pointer-events: none;
 }
 
+/* .Button a{
+  width: 100%;
+  display: block;
+} */
+.NavigationItem{
+  background-color: white;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  font-weight: normal;
+  margin: 0;
+}
+.AsLink {
+  position: relative;
+}
+.AsLink a{
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  line-height: 40px;
+  display: block;
+  position: absolute;
+}
+
 .Success {
     color: #5C9210;
 }
@@ -34,10 +70,61 @@
 }
 
 .Menu{
-  min-width: 190px;
+  /* min-width: 190px; */
   min-height: 50px;
-  max-width: 180px;
+  /* max-width: 180px; */
   /* flex: 1; */
+}
+
+.Chat{
+  position: fixed;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 20px;
+  color: #696969;
+  background-color: white;
+  bottom: 10px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid grey;
+  /* box-shadow: 5px 5px 0 black; */
+}
+
+.Chat svg{
+  width: 30px;
+  height: 30px;
+}
+
+
+
+.Reminder{
+  padding: 10px 10px;
+  background-color: rgba(100,149,237,.6);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  width: 96%;
+  margin: 0 2%;
+  margin-top: 55px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.Reminder a{
+  width: 100%;
+  color: white;
+  display: block;
+}
+
+.Rule{
+  background-color: #eee;
+  border: none;
+  font-weight: normal;
+  color: #696969;
+  font-size: 14px;
 }
 
 .Link a{
@@ -51,11 +138,33 @@
   margin: 10px 3%;
 }
 
+.BackToTopBtn{
+  max-width: none;
+  min-height: 40px;
+  margin-bottom: 100px;
+  margin: 0 0 100px;
+}
 
+.ResetBtn{
+  border: none;
+  background-color: rgba(0,0,0,.05);
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+.ScrollToTop{
+  border: none;
+  background-color: rgba(0,0,0,.1);
+  margin-bottom: 10px;
+}
 
 @media(min-width: 768px) {
   .Button{
     max-width: 300px;
+  }
+  .BackToTopBtn{
+    max-width: none;
+
   }
 
   .Button:hover{
@@ -69,5 +178,27 @@
   .GameMenu{
     height: 80px;
   }
+  .Reminder{
+    margin: 50px auto 0;
+    display: block;
+  }
+  .ResetBtn{
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .Reminder:hover{
+    background-color: cornflowerblue;
+    opacity: .9;
+  }
+
+  .Wide, .ScrollToTop{
+    max-width: none;
+  }
+  .MsgSubmit{
+    flex: 1;
+    max-width: none;
+  }
+
 
 }

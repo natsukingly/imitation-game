@@ -38,4 +38,9 @@ export {
   joinGame,
   joinGameWithForce,
   exitGame,
+  setMessages,
+  submitMessage,
+  gameWillAnimate,
+  gameHasAnimated,
+  hasJudged,
 } from './game';

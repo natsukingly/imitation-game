@@ -39,6 +39,11 @@ export const checkUserGamingStatus = () => {
             }
           }
         )
+        firebase.database().ref('/chat' ).limitToLast(20).on('value',
+          uChatSnapshot => {
+            dispatch(setUMessagesSuccess(uChatSnapshot.val()))
+          }
+        )
       }
     })
   }
@@ -50,6 +55,20 @@ export const checkUserGamingStatusSuccess = (isGaming) => {
     userIsGaming: isGaming
   };
 }
+
+
+export const gameHasAnimated = () => {
+  return{
+    type: actionTypes.GAME_HAS_ANIMATED,
+  };
+}
+
+export const gameWillAnimate = () => {
+  return{
+    type: actionTypes.GAME_WILL_ANIMATE,
+  };
+}
+
 
 export const checkPlayerStatus = () => {
 
@@ -92,25 +111,63 @@ export const startGame = (status) => {
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
       {
         const gameId = snapshot.val().gameId;
-        firebase.database().ref('/games/' + gameId + '/info' ).update({status: 'question'})
-        .then(
-          dispatch(startGameSuccess())
+        firebase.database().ref('/games/' + gameId).once('value').then(
+          gameSnapshot => {
+            const round = gameSnapshot.val().info.length
+            let playersData = Object.keys(gameSnapshot.val().players)
+            const players = playersData.length
+
+
+            let playerUids = []
+            Object.keys(gameSnapshot.val().players).map((uid) => {
+              return playerUids.push(uid)
+            })
+
+            let judges = [];
+            let targets = [];
+
+            for(var i=0;i<round ;i++){
+              let randomIndex = Math.floor(Math.random()*players)
+              judges.push(playerUids[randomIndex])
+              randomIndex = Math.floor(Math.random()*players)
+              targets.push(playerUids[randomIndex])
+            }
+
+            let date = new Date() ;
+            let a = date.getTime() ;
+            let stageChangedAt = Math.floor( a / 1000 ) ;
+
+            // const judges = [...Array(round)].map(()=>{return Math.floor(Math.random()*players)})
+            // const targets = [...Array(round)].map(()=>{return Math.floor(Math.random()*players)})
+            firebase.database().ref('/games/' + gameId + '/info' ).update({status: 'question', judges: judges, targets: targets, stageChangedAt})
+            .then(
+              dispatch(startGameSuccess())
+            )
+          }
         )
+
+
       }
     )
 
   }
 }
 
+export const startGameSuccess = () => {
+  return{
+    type: actionTypes.GAME_START_SUCCESS,
+  };
+}
+
+
 export const joinGame = (gameId) => {
-  // console.log(gameId)
   return dispatch => {
     const cuid = firebase.auth().currentUser.uid;
     firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
       {
         const currentUser = snapshot.val();
         const gameEx = snapshot.val().gameEx + 1
-        firebase.database().ref('/users/' + cuid ).update({isGaming: true, gameId: gameId, gameEx: gameEx})
+        firebase.database().ref('/users/' + cuid ).update({isGaming: true, gameId: gameId, gameEx: gameEx, leader: false})
         firebase.database().ref('/games/' + gameId + '/players/' + cuid ).set({image: currentUser.image, leader: false, name: currentUser.name, ready: false, active: true})
         firebase.database().ref('/games/' + gameId + '/input/' + cuid ).set({input: ''})
         firebase.database().ref('/games/' + gameId + '/output/' + cuid ).set({output: ''})
@@ -125,25 +182,50 @@ export const joinGame = (gameId) => {
 
 export const joinGameWithForce = (nextGameId) => {
   return dispatch => {
-    const cuid = firebase.auth().currentUser.uid;
-    firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
-      {
-        const currentUser = snapshot.val();
-        const currentGameId = snapshot.val().gameId;
-        const gameEx = snapshot.val().gameEx + 1;
-        firebase.database().ref('/games/' + currentGameId + '/players/' + cuid).update({active: false})
 
-        firebase.database().ref('/users/' + cuid ).update({isGaming: true, gameId: nextGameId, gameEx: gameEx})
-        firebase.database().ref('/games/' + nextGameId + '/players/' + cuid ).set({image: currentUser.image, leader: false, name: currentUser.name, ready: false})
-        firebase.database().ref('/games/' + nextGameId + '/input/' + cuid ).set({input: ''})
-        firebase.database().ref('/games/' + nextGameId + '/output/' + cuid ).set({output: ''})
-        firebase.database().ref('/games/' + nextGameId + '/score/' + cuid ).set({score: 0, lastScore: 0, uid: cuid})
-        .then(
-          dispatch(joinGameSuccess())
-        )
-      }
-    )
-  }
+        const cuid = firebase.auth().currentUser.uid;
+
+        firebase.database().ref('/users/' + cuid).once('value').then(
+          snapshot =>
+          {
+          const user = snapshot.val()
+          const gameEx = snapshot.val().gameEx + 1
+          firebase.database().ref('/games/' + user.gameId ).off()
+          firebase.database().ref('/games/' + user.gameId + '/players/' + cuid).update({active: false})
+          if(user.leader === true){
+            firebase.database().ref('/games/' + user.gameId + '/info').once('value').then(
+
+              gameSnapshot =>
+                {
+                  if(gameSnapshot.val().status !== 'finalResult'){
+                    firebase.database().ref('/games/' + user.gameId + '/info').update({leader: false, status: 'noLeader'})
+                  }
+                }
+            )
+          }
+          firebase.database().ref('/users/' + cuid).update({gameId: '', isGaming: false, leader: false})
+          .then( dispatch(exitGameSuccess()))
+          .then(() =>
+            {
+              firebase.database().ref('/users/' + cuid ).update({isGaming: true, gameId: nextGameId, gameEx: gameEx, leader: false})
+
+              firebase.database().ref('/users/' + cuid ).once('value').then( userSnapshot =>
+                {
+                  const currentUser = userSnapshot.val()
+                  firebase.database().ref('/games/' + nextGameId + '/players/' + cuid ).set({image: currentUser.image, leader: false, name: currentUser.name, ready: false, active: true})
+                }
+              )
+              firebase.database().ref('/games/' + nextGameId + '/input/' + cuid ).set({input: ''})
+              firebase.database().ref('/games/' + nextGameId + '/output/' + cuid ).set({output: ''})
+              firebase.database().ref('/games/' + nextGameId + '/score/' + cuid ).set({score: 0, lastScore: 0, uid: cuid})
+              .then(
+                dispatch(joinGameSuccess())
+              )
+            }
+          )
+        }
+      )
+    };
 }
 
 export const joinGameSuccess = () => {
@@ -167,22 +249,30 @@ export const moveForward = (nextStage) => {
               firebase.database().ref('/games/' + gameId + '/players/' + playerId ).update({ready: false})
             )
           }
+
         )
-        .then(
-          firebase.database().ref('/games/' + gameId + '/info' ).update({status: nextStage})
-        )
-        .then(
-          dispatch(moveForwardSuccess(nextStage))
+        .then(() =>
+          {
+            let date = new Date() ;
+            let a = date.getTime() ;
+            let stageChangedAt = Math.floor( a / 1000 ) ;
+
+            firebase.database().ref('/games/' + gameId + '/info' ).update({status: nextStage, stageChangedAt: stageChangedAt})
+            .then(
+              dispatch(moveForwardSuccess(nextStage, stageChangedAt))
+            )
+          }
         )
       }
     )
   }
 }
 
-export const moveForwardSuccess = (nextStage) => {
+export const moveForwardSuccess = (nextStage, stageChangedAt) => {
   return{
     type: actionTypes.GAME_MOVE_FORWARD_SUCCESS,
-    action: nextStage
+    nextStage: nextStage,
+    time: stageChangedAt
   };
 }
 
@@ -200,9 +290,16 @@ export const moveToNextQuestion = () => {
             .then(
               Object.keys(players).map( (playerId) =>
                 {
-                firebase.database().ref('/games/' + gameId + '/players/' + playerId ).update({ready: false})
-                firebase.database().ref('/games/' + gameId + '/input/' + playerId ).update({input: ''})
-                firebase.database().ref('/games/' + gameId + '/output/' + playerId ).update({output: ''})
+
+                firebase.database().ref('/games/' + gameId + '/score/' + playerId ).once('value').then(
+                  scoreSnapshot => {
+                    const currentScore = scoreSnapshot.val().score;
+                    firebase.database().ref('/games/' + gameId + '/players/' + playerId ).update({ready: false})
+                    firebase.database().ref('/games/' + gameId + '/score/' + playerId ).update({lastScore: currentScore})
+                    firebase.database().ref('/games/' + gameId + '/input/' + playerId ).update({input: ''})
+                    firebase.database().ref('/games/' + gameId + '/output/' + playerId ).update({output: ''})
+                  }
+                )
                 return false;
                 }
             )
@@ -226,11 +323,135 @@ export const moveToNextQuestion = () => {
   }
 }
 
+// ======working=========
+export const setMessages = () => {
+  return dispatch => {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if(user){
+        const cuid = user.uid;
+
+        firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
+          {
+            const gameId = snapshot.val().gameId;
+            const isGaming = snapshot.val().isGaming;
+            if(isGaming){
+              firebase.database().ref('/games/' + gameId + '/chat' ).limitToLast(20).once('value').then(
+                chatSnapshot => {
+                  dispatch(setMessagesSuccess(chatSnapshot.val()))
+                }
+              )
+            }
+            firebase.database().ref('/chat' ).limitToLast(20).on('value',
+              uChatSnapshot => {
+                dispatch(setUMessagesSuccess(uChatSnapshot.val()))
+              }
+            )
+          }
+        )
+      }
+    })
+  }
+}
+
+export const setMessagesSuccess = (messages) => {
+  return{
+    type: actionTypes.GAME_SET_MESSAGES_SUCCESS,
+    messages: messages
+  };
+}
+
+export const setUMessagesSuccess = (uMessages) => {
+  return{
+    type: actionTypes.GAME_SET_UMESSAGES_SUCCESS,
+    uMessages: uMessages
+  };
+}
+
+export const submitMessage = (msg, type) => {
+  return dispatch => {
+    let date = new Date() ;
+    let a = date.getTime() ;
+    let createdAt = Math.floor( a / 1000 ) ;
+    const cuid = firebase.auth().currentUser.uid;
+    firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
+      {
+        const gameId = snapshot.val().gameId;
+        const userImage = snapshot.val().image;
+        const userName = snapshot.val().name
+        if(type === 'players'){
+
+
+
+          firebase.database().ref('/games/' + gameId + '/info').update({newMessage: createdAt})
+
+          const chatRef = firebase.database().ref('/games/' + gameId + '/chat' )
+          chatRef.push().set({uid: cuid,
+            content: msg,
+            createdAt: createdAt,
+            name: userName,
+            image: userImage
+          })
+          .then(
+            firebase.database().ref('/games/' + gameId + '/chat' ).limitToLast(20).once('value').then(
+              chatSnapshot => {
+                dispatch(setMessagesSuccess(chatSnapshot.val()))
+              }
+            )
+          )
+
+        } else {
+          const chatRef = firebase.database().ref('/chat')
+          chatRef.push().set({uid: cuid,
+            content: msg,
+            createdAt: createdAt,
+            name: userName,
+            image: userImage
+          })
+          .then(
+            firebase.database().ref('/chat' ).limitToLast(20).once('value').then(
+              chatSnapshot => {
+                dispatch(setUMessagesSuccess(chatSnapshot.val()))
+              }
+            )
+          )
+        }
+      }
+    )
+  }
+}
+
+export const submitMessageSuccess = () => {
+  return{
+    type: actionTypes.GAME_SUBMIT_MESSAGE_SUCCESS,
+  };
+}
+
+
+
+
+
+
+
+
+// =====working ====
+
+
+
+
 export const moveToNextQuestionSuccess = () => {
   return{
     type: actionTypes.GAME_MOVE_TO_NEXT_QUESTION_SUCCESS,
   };
 }
+
+
+
+
+
+
+
+
+
 
 export const moveToFinalResult = () => {
   return dispatch => {
@@ -254,15 +475,6 @@ export const moveToLastStageSuccess = () => {
   };
 }
 
-
-
-
-
-export const startGameSuccess = () => {
-  return{
-    type: actionTypes.GAME_START_SUCCESS,
-  };
-}
 
 export const getGameInfo = (gameId) => {
   return dispatch => {
@@ -300,8 +512,6 @@ export const exitGame = () => {
 
             gameSnapshot =>
               {
-                // console.log(gameSnapshot.val())
-                // console.log(gameSnapshot.val().status)
                 if(gameSnapshot.val().status !== 'finalResult'){
                   firebase.database().ref('/games/' + user.gameId + '/info').update({leader: false, status: 'noLeader'})
                 }
@@ -324,6 +534,8 @@ export const exitGameSuccess = (game, user) => {
   }
 }
 
+// deck 変更で分岐させる
+
 export const setQuestion = () => {
   return dispatch => {
     const cuid = firebase.auth().currentUser.uid;
@@ -333,12 +545,27 @@ export const setQuestion = () => {
         firebase.database().ref('/games/' + gameId ).once('value').then(gameSnapshot =>
           {
             const stage = gameSnapshot.val().info.stage;
+            const gameType = gameSnapshot.val().info.gameType;
             const questionList = gameSnapshot.val().info.questions;
             const selectedQuestion = questionList[stage];
+
+            let selectedJudgeUid = null;
+            let selectedTargetUid = null;
+
+            if(gameType === 'imaginationGame'){
+
+              const judgeList = gameSnapshot.val().info.judges;
+              const targetList = gameSnapshot.val().info.targets;
+
+              selectedJudgeUid = judgeList[stage];
+              selectedTargetUid = targetList[stage];
+
+            }
+
             firebase.database().ref('/games/' + gameId + '/info').update({currentQuestion: questionList[stage]})
             .then(
-              firebase.database().ref('/decks/imitationGame/' + selectedQuestion ).once('value').then( questionSnapshot => {
-                dispatch(setQuestionSuccess(questionSnapshot))
+              firebase.database().ref('/decks/' + gameType + '/' + selectedQuestion ).once('value').then( questionSnapshot => {
+                dispatch(setQuestionSuccess(questionSnapshot, selectedJudgeUid, selectedTargetUid))
               })
             )
           }
@@ -348,6 +575,17 @@ export const setQuestion = () => {
   }
 }
 
+export const setQuestionSuccess = (questionSnapshot, judge, target) => {
+  return{
+    type: actionTypes.GAME_SET_QUESTION_SUCCESS,
+    question: questionSnapshot.val().question,
+    judge: judge,
+    target: target
+  };
+}
+
+// deck 変更で分岐させる
+
 export const setPresetOptions = () => {
   return dispatch => {
     const cuid = firebase.auth().currentUser.uid;
@@ -356,9 +594,14 @@ export const setPresetOptions = () => {
         const gameId = snapshot.val().gameId
         firebase.database().ref('/games/' + gameId ).once('value').then(gameSnapshot =>
           {
+            const gameType = gameSnapshot.val().info.gameType;
             const targetQuestion = gameSnapshot.val().info.currentQuestion;
-            firebase.database().ref('/decks/imitationGame/' + targetQuestion ).once('value').then( questionSnapshot => {
-              dispatch(setPresetOptionsSuccess(questionSnapshot.val().answer, questionSnapshot.val().fake))
+            firebase.database().ref('/decks/' + gameType + '/' + targetQuestion ).once('value').then( questionSnapshot => {
+              if(gameType === 'imitationGame'){
+                dispatch(setPresetOptionsSuccess(questionSnapshot.val().answer, questionSnapshot.val().fake))
+              } else if (gameType === 'imaginationGame'){
+                dispatch(setPresetOptionsSuccess(null, questionSnapshot.val().dummy))
+              }
             })
           }
         )
@@ -374,6 +617,67 @@ export const setPresetOptionsSuccess = (answer, fake) => {
     fake: fake,
   };
 }
+
+export const hasJudged = (optionId)=> {
+  return dispatch => {
+
+    const cuid = firebase.auth().currentUser.uid;
+    firebase.database().ref('/users/' + cuid ).once('value').then( snapshot =>
+      {
+        const gameId = snapshot.val().gameId
+        firebase.database().ref('/games/' + gameId + '/output/' + cuid)
+        .update({output: optionId})
+        .then(() => {
+            switch(optionId){
+              case "dummy":
+                firebase.database().ref('/games/' + gameId + '/score')
+                .once('value').then( scoreSnapshot =>
+                  {
+                    const currentScores = scoreSnapshot.val();
+                    Object.keys(currentScores).map( (playerId) =>
+                      {
+                        const currentScore = currentScores[playerId].score;
+                        firebase.database().ref('/games/' + gameId + '/score/' + playerId)
+                        .update({score: currentScore - 1});
+
+                        return false;
+                      }
+                    )
+                  }
+                )
+                break;
+                case cuid:
+                  firebase.database().ref('/games/' + gameId + '/score/' + cuid)
+                    .once('value').then( scoreSnapshot =>
+                      {
+                        const currentScore = scoreSnapshot.val().score;
+                        firebase.database().ref('/games/' + gameId + '/score/' + cuid)
+                        .update({score: currentScore - 3});
+                      }
+                    )
+                    break;
+              default:
+                firebase.database().ref('/games/' + gameId + '/score/' + optionId)
+                .once('value').then( scoreSnapshot =>
+                  {
+                    const currentScore = scoreSnapshot.val().score;
+                    firebase.database().ref('/games/' + gameId + '/score/' + optionId)
+                    .update({score: currentScore + 3});
+
+                  }
+                )
+            }
+          }
+        )
+        .then(
+          dispatch(moveForward('outcome'))
+        )
+      }
+    )
+  }
+}
+
+
 
 export const selectOption = (optionId) => {
   return dispatch => {
@@ -392,7 +696,7 @@ export const selectOption = (optionId) => {
                   {
                     const currentScore = scoreSnapshot.val().score;
                     firebase.database().ref('/games/' + gameId + '/score/' + cuid)
-                    .update({score: currentScore + 1, lastScore: currentScore});
+                    .update({score: currentScore + 1});
                   }
                 )
                 break;
@@ -402,7 +706,7 @@ export const selectOption = (optionId) => {
                   {
                     const currentScore = scoreSnapshot.val().score;
                     firebase.database().ref('/games/' + gameId + '/score/' + cuid)
-                    .update({score: currentScore - 1, lastScore: currentScore});
+                    .update({score: currentScore - 1});
                   }
                 )
                 break;
@@ -412,7 +716,7 @@ export const selectOption = (optionId) => {
                     {
                       const currentScore = scoreSnapshot.val().score;
                       firebase.database().ref('/games/' + gameId + '/score/' + cuid)
-                      .update({score: currentScore - 3, lastScore: currentScore});
+                      .update({score: currentScore - 3});
                     }
                   )
                   break;
@@ -422,7 +726,7 @@ export const selectOption = (optionId) => {
                   {
                     const currentScore = scoreSnapshot.val().score;
                     firebase.database().ref('/games/' + gameId + '/score/' + optionId)
-                    .update({score: currentScore + 3, lastScore: currentScore});
+                    .update({score: currentScore + 3});
                   }
                 )
             }
@@ -441,12 +745,7 @@ export const selectOption = (optionId) => {
 }
 
 
-export const setQuestionSuccess = (questionSnapshot) => {
-  return{
-    type: actionTypes.GAME_SET_QUESTION_SUCCESS,
-    question: questionSnapshot.val().question
-  };
-}
+
 
 export const submitInput = (input) => {
   return dispatch => {
@@ -512,7 +811,11 @@ export const createGameStart = () => {
   };
 };
 
-export const createGame = (round) => {
+
+
+// deck 変更で分岐させる
+
+export const createGame = (gameType, round) => {
   return dispatch => {
     dispatch(createGameStart())
     const uid = firebase.auth().currentUser.uid;
@@ -523,7 +826,13 @@ export const createGame = (round) => {
         const gameEx = user.gameEx + 1
         const gameId = uid + gameEx
         // array creation
-        const totalQuestions = 3
+        let totalQuestions = 0;
+        if(gameType === 'imitationGame'){
+          totalQuestions = 60;
+        }else if(gameType === 'imaginationGame'){
+          totalQuestions = 34;
+        }
+
         const indexArray = Array.from(Array(totalQuestions).keys())
 
         // array shuffle code
@@ -538,7 +847,7 @@ export const createGame = (round) => {
           return ary;
         }
         // array shuffle code
-        const questions = shuffleAry(indexArray).slice(0, round)
+        const questions = shuffleAry(indexArray).slice(0, round);
 
           var d = new Date();
           var year  = d.getFullYear();
@@ -549,19 +858,22 @@ export const createGame = (round) => {
           var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
           var GameCreatedAt = year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec ;
 
-
           var gameData = {
             gameId: gameId,
             length: round,
             questions: questions,
+            judges: '',
+            targets: '',
             currentQuestion: '',
             games: '',
-            deck: 'imitationGame',
+            gameType: gameType,
             member: 1,
             stage: 0,
             status: 'init',
             leader: uid,
-            createdAt: GameCreatedAt
+            stageChangedAt: '',
+            createdAt: GameCreatedAt,
+            newMessage: false,
           }
 
           var playerData = {
@@ -576,6 +888,8 @@ export const createGame = (round) => {
           // setData['/players/' + user.uid] = playerData;
           firebase.database().ref('/games/' + gameId ).set('')
           firebase.database().ref('/games/' + gameId + '/info').set(gameData)
+          .then(
+          firebase.database().ref('/games/' + gameId + '/chat/init').set({content: false}))
           .then(
           firebase.database().ref('/games/' + gameId + '/players/' + uid).set(playerData))
           .then(

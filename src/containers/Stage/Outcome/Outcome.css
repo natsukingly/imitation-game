@@ -6,22 +6,34 @@
   padding-top: 80px;
 }
 
+.Question{
+  margin: 0 10px;
+}
+@media(min-width: 768px){
+  .Question{
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
 
 
 .SectionTitle{
-  max-width: 300px;
+  margin: 80px 10px 30px;
   /* background-color: #f9f9f9; */
   border-bottom: solid 3px #aaa;
   position: relative;
-  margin: 80px auto 30px;
+
   text-align: center;
-  font-size: 16px;
+  font-size: 26px;
   font-weight: 600;
   padding: 12px;
 }
 
-.SectionTitle:not(:first-child){
-  margin: 80px auto 30px;
+@media(min-width: 768px){
+  .SectionTitle{
+    max-width: 300px;
+    margin: 80px auto 30px;
+  }
 }
 
 .SectionTitle:after {
@@ -41,11 +53,16 @@
 }
 
 .Note{
-  max-width: 300px;
-  margin: 0 auto;
+  margin: 0 10px;
   text-align: center;
 }
 
+@media(min-width: 768px){
+  .Note{
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
 .LinkBtn{
   width: 100%;
 }
@@ -59,32 +76,58 @@
   align-items: center;
   color: white;
   position: relative;
+  /* text-align: center; */
 }
 
 
 
 .Result h2{
   font-size: 40px;
+  line-height: 34px;
   text-align: center;
   margin-bottom: 5px;
+}
+
+
+.Result p{
+  text-align: center;
 }
 
 .Users{
   display: flex;
   justify-content: space-around;
-  max-width: 300px;
-  margin: 0 auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 0 10px;
 }
 
-.UserList{
+.UserList, .RankedUsers{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 10px;
+}
+
+
+@media(min-width: 768px){
+  .Users{
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
+
+/* .UserList{
   max-width: 300px;
   margin: 0 auto;
-}
+} */
 
 .UserListItem{
   display: flex;
-  align-items: center;
-
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 0 10px;
 }
 
 .UserImage{
@@ -97,10 +140,10 @@
   background-color: #eee;
 }
 
-.RankedUsers{
+/* .RankedUsers{
   max-width: 300px;
   margin: 0 auto;
-}
+} */
 
 .RankedUser{
 
@@ -113,22 +156,34 @@
   margin-bottom: 5px;
 }
 
+
 .One, .Two, .Three, .ResultStatement, .ResultStatementEarly{
-  /* display: none; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute;
-  opacity: 0;
+  font-size: 30px;
+  width: 90%;
   -webkit-transform: translate(-50%,-60%);
   -moz-transform: translate(-50%,-60%);
   -ms-transform: translate(-50%,-60%);
   -o-transform: translate(-50%,-60%);
   transform: translate(-50%,-60%);
+}
+
+.WillAnimate .One,
+.WillAnimate .Two,
+.WillAnimate .Three,
+.WillAnimate .ResultStatement,
+.WillAnimate .ResultStatementEarly{
+  opacity: 0;
   animation-name: count;
   animation-duration: 1s;
   animation-timing-function: ease;
-  font-size: 30px;
 }
-
-.One, .Two, .Three{
+.One,
+.Two,
+.Three{
   padding-bottom: 20px;
   margin: 0;
   font-size: 50px;
@@ -146,29 +201,45 @@
   animation-delay: 1s;
 }
 
-.ResultStatement{
+.HasAnimated .One,
+.HasAnimated .Two,
+.HasAnimated .Three{
+  display: none;
+}
+
+
+
+.WillAnimate .ResultStatement{
   animation-name: countStay;
   animation-delay: 5s;
   animation-fill-mode: forwards;
   text-shadow: 0 0 5px black;
 }
 
-.ResultStatementEarly{
+.WillAnimate .ResultStatementEarly{
   animation-name: countStay;
   animation-delay: 3s;
   animation-fill-mode: forwards;
   text-shadow: 0 0 5px black;
 }
 
-.ResultStatement h2, .ResultStatementEarly h2{
-  margin: 0;
+.HasAnimated .ResultStatement,
+.HasAnimated .ResultStatementEarly{
+  text-shadow: 0 0 5px black;
 }
 
-.ResultStatement p{
+
+
+
+.ResultStatement h2, .ResultStatementEarly h2{
+  margin: 15px 0 15px;
+}
+
+.ResultStatement p, .ResultStatementEarly p{
   font-size: 16px;
 }
 
-.Overlay{
+.Overlay, .OverlayEarly{
   position: absolute;
   opacity: 0;
   top: 0;
@@ -177,13 +248,35 @@
   bottom: 0;
   background-size: cover;
   background-position: center;
+}
+
+.WillAnimate .Overlay,
+.WillAnimate .OverlayEarly{
   animation-name: countStay;
   animation-fill-mode: forwards;
   animation-delay: 7s;
 }
 
+.WillAnimate .OverlayEarly{
+  animation-delay: 5s;
+}
+
+.HasAnimated .Overlay,
+.HasAnimated .OverlayEarly{
+  opacity: 1;
+}
+
+
 .Content{
   opacity: 0;
+
+}
+
+.HasAnimated .Content{
+  opacity: 1;
+}
+
+.WillAnimate .Content{
   animation-name: countStay;
   animation-fill-mode: forwards;
   animation-delay: 7s;

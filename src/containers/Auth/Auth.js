@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { Redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Logo from '../../components/Logo/Logo';
+import Rule from '../../components/Rule/Rule';
 import classes from './Auth.css';
 import Aux from '../../hoc/Aux/Aux';
 import * as actions from '../../store/actions/index';
@@ -44,6 +45,7 @@ class Auth extends Component {
             }
         },
         emailMode: false,
+        showRule: false
     }
 
 
@@ -72,6 +74,37 @@ class Auth extends Component {
         this.setState( prevState => {
             return { emailMode: !prevState.emailMode };
         } );
+    }
+
+    showRuleHandler = () => {
+      this.setState({showRule: true})
+      // window.setTimeout(() => this.scrollDown, 2000)
+      // window.setTimeout(() => console.log('natsuking'), 2000)
+      let targetDOM = document.getElementById('LoginBtns');
+      console.log(targetDOM)
+      let targetPoint = targetDOM.getBoundingClientRect();
+      console.log(targetPoint.top + targetPoint.bottom)
+      this.scrollDown(400);
+    }
+
+    scrollDown = (targetPoint) => {
+      let scrollDownInterval = setInterval(function(){
+        if ( window.scrollY !== targetPoint ) {
+            window.scrollBy( 0, 20 );
+        }
+        else clearInterval(scrollDownInterval);
+      },15);
+    }
+
+    scrollTop = () => {
+      // window.scrollTo(0,0);
+      let scrollStep = -window.scrollY / (500 / 15),
+      scrollInterval = setInterval(function(){
+        if ( window.scrollY !== 0 ) {
+            window.scrollBy( 0, scrollStep );
+        }
+        else clearInterval(scrollInterval);
+      },15);
     }
 
 
@@ -114,7 +147,10 @@ class Auth extends Component {
         let loginForm = (
           <div
             className={classes.LoginBtns}
+            id="LoginBtns"
             >
+
+            <NavLink to="/terms"><p className={classes.LinkToTerms}>利用規約＆プライペートポリシー</p></NavLink>
             <Button
                 clicked={this.submitTwitterHandler}
                 >Twitterで続ける</Button>
@@ -122,6 +158,11 @@ class Auth extends Component {
             <Button
                 clicked={this.switchAuthModeHandler}
             >Emailで続ける</Button>
+            <Button
+              btnType="Rule"
+              clicked={this.showRuleHandler}
+
+            >なんやこのゲーム？</Button>
           </div>
         );
 
@@ -137,7 +178,10 @@ class Auth extends Component {
           );
         }
 
-
+        let rule = null;
+        if(this.state.showRule){
+          rule = <Rule clicked={this.scrollTop}/>
+        }
 
         let content = null;
 
@@ -145,7 +189,8 @@ class Auth extends Component {
           content = (
             <Aux>
               <h1 className={classes.Title}>IMITATION<br/>GAME</h1>
-              <div className={classes.LogoBox}>
+              {/* <h1 className={classes.Title}> ZAMAMISO</h1> */}
+              <div className={classes.LogoBox} style={{paddingBottom: 0}}>
                 <Logo />
               </div>
               <div className={classes.Auth}>
@@ -154,12 +199,15 @@ class Auth extends Component {
                 {loginForm}
 
               </div>
+              {rule}
             </Aux>
           );
         }
         if ( this.props.loading ) {
             content = <div className={classes.Loading}><Spinner /></div>;
         }
+
+
 
         return (
           <Aux>

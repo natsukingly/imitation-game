@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import asyncComponent from './hoc/asyncComponent/asyncComponent';
+// import asyncComponent from './hoc/asyncComponent/asyncComponent';
+import MetaTags from './metaTags';
+
 
 import Layout from './hoc/Layout/Layout';
 import Auth from './containers/Auth/Auth';
+import Terms from './containers/Info/Terms';
 import Home from './containers/Home/Home';
+import Loading from './containers/Loading/Loading';
 import GameMenu from './containers/GameMenu/GameMenu';
 import Game from './containers/Game/Game';
+import Rules from './containers/Rules/Rules';
 import Logout from './containers/Auth/Logout/Logout';
 import ExitGame from './containers/Game/ExitGame/ExitGame';
 // import ExitGameToResult from './containers/Game/ExitGameToResult/ExitGameToResult';
@@ -17,13 +22,13 @@ import Spinner from './components/UI/Spinner/Spinner';
 import classes from './App.css';
 import * as actions from './store/actions/index';
 
-const asyncCheckout = asyncComponent(() => {
-  return import('./containers/Checkout/Checkout');
-});
+// const asyncCheckout = asyncComponent(() => {
+//   return import('./containers/Checkout/Checkout');
+// });
 
-const asyncOrders = asyncComponent(() => {
-  return import('./containers/Orders/Orders');
-});
+// const asyncOrders = asyncComponent(() => {
+//   return import('./containers/Orders/Orders');
+// });
 
 // const asyncAuth = asyncComponent(() => {
 //   return import('./containers/Auth/Auth');
@@ -33,6 +38,7 @@ class App extends Component {
   componentDidMount () {
     this.props.checkUserStatus()
     this.props.checkUserGamingStatus()
+    window.scrollTo(0, 0)
   }
 
 
@@ -43,6 +49,7 @@ class App extends Component {
     let routes = (
       <Switch>
         <Route path="/" render={() => <div className={classes.Loading}><Spinner /></div>}/>
+
       </Switch>
     );
 
@@ -52,8 +59,10 @@ class App extends Component {
         <Switch>
           <Route path="/game" component={Game} />
           <Route path="/" exact component={Home} />
+          <Route path="/terms" exact component={Terms} />
           <Route path="/logout" component={Logout} />
           <Route path="/exit-game" component={ExitGame} />
+          <Route path="/rules" component={Rules} />
           <Route path="/invitation/:id" component={Invitation} />
           <Redirect to="/game" />
         </Switch>
@@ -63,9 +72,12 @@ class App extends Component {
         <Switch>
           <Route path="/invitation/:id" component={Invitation} />
           <Route path="/game-menu" component={GameMenu} />
-          <Route path="/checkout" component={asyncCheckout} />
-          <Route path="/orders" component={asyncOrders} />
+          {/* <Route path="/checkout" component={asyncCheckout} /> */}
+          {/* <Route path="/orders" component={asyncOrders} /> */}
+          <Route path="/rules" component={Rules} />
           <Route path="/logout" component={Logout} />
+          <Route path="/loading" component={Loading} />
+          <Route path="/terms" exact component={Terms} />
           <Route path="/" component={Home} />
           <Redirect to="/" />
         </Switch>
@@ -73,6 +85,7 @@ class App extends Component {
     } else if (this.props.isAuthenticated === false){
       routes = (
         <Switch>
+          <Route path="/terms" exact component={Terms} />
           <Route path="/" component={Auth} />
         </Switch>
       );
@@ -81,6 +94,7 @@ class App extends Component {
 
     return (
       <div className={classes.Layout}>
+        <MetaTags />
         <Layout>
           {routes}
         </Layout>

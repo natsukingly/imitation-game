@@ -8,19 +8,22 @@
 }
 
 .SectionTitle{
-  max-width: 280px;
+  margin: 80px 10px 30px;
   /* background-color: #f9f9f9; */
   border-bottom: solid 3px #aaa;
   position: relative;
-  margin: 80px auto 30px;
+
   text-align: center;
-  font-size: 16px;
+  font-size: 26px;
   font-weight: 600;
   padding: 12px;
 }
 
-.SectionTitle:not(:first-child){
-  margin: 80px auto 30px;
+@media(min-width: 768px){
+  .SectionTitle{
+    max-width: 300px;
+    margin: 80px auto 30px;
+  }
 }
 
 .SectionTitle:after {
@@ -33,11 +36,11 @@
   width: 20%;
 }
 
-@media(min-width: 768px){
+/* @media(min-width: 768px){
   .SectionTitle{
     margin: 0 auto 30px;
   }
-}
+} */
 
 .Leader{
   display: flex;
@@ -102,17 +105,34 @@
 
 
 .InvitationURL{
-  max-width: 300px;
-  height: 40px;
+  margin: 0 10px;
+
+  max-width: 200px;
+  margin: 0 10px;
+  word-wrap: break-word;
   overflow: scroll;
+}
+
+@media(min-width: 768px){
+  .InvitationURL{
+    max-width: 300px;
+    margin: 0 auto;
+  }
 }
 
 .Users{
   display: flex;
   justify-content: space-around;
-  align-items: start;
-  max-width: 300px;
-  margin: 0 auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 0 10px;
+}
+
+@media(min-width: 768px){
+  .Users{
+    max-width: 300px;
+    margin: 0 auto;
+  }
 }
 
 .User{
@@ -122,17 +142,23 @@
   justify-content: center;
   margin: 20px;
   margin-top: 0;
-  width: 50%;
+  width: 30%;
 }
 
 .UserImage{
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   background-size: cover;
   background-position: center;
   border-radius: 50%;
   margin-bottom: 5px;
   background-color: #eee;
+}
+
+.Button{
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .Forward{

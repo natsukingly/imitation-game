@@ -5,7 +5,7 @@ import classes from './Toolbar.css';
 import DrawerToggle from '../SideDrawer/DrawerToggle/DrawerToggle';
 
 const toolbar = ( props ) => (
-    <header className={classes.Toolbar}>
+    <header className={classes.Toolbar} onClick={props.clicked}>
         <div className={classes.Logo}>
             <Link to='/'>
               <p className={classes.logo}>IMITATION <br/> GAME</p>

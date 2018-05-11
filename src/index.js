@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import firebase from 'firebase'
 import { config } from './firebase/config'
 
+
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';

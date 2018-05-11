@@ -37,6 +37,36 @@
 }
 
 
+.Host{
+  text-align: center;
+  color: #696969;
+  margin: 50px 10px;
+}
+
+@media(min-width: 768px){
+  .Host{
+    max-width: 300px;
+    margin: 50px auto;
+  }
+}
+
+.Note{
+
+}
+
+.FlashingNote{
+  margin-bottom: 20px;
+  animation-name: loading;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+
+@keyframes loading{
+0%   { color: #696969; }
+100% { color: #aaa; }
+}
 
 
 /* .Loader,

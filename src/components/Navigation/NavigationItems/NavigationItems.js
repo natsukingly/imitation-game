@@ -11,10 +11,10 @@ const navigationItems = ( props ) => {
       <ul className={classes.NavigationItems}>
         <NavigationItem link="/" exact>ホーム</NavigationItem>
         <NavigationItem link="/game" exact>ゲームに戻る</NavigationItem>
-        <NavigationItem link="/exit-game" exact>ゲームをやめる</NavigationItem>
-        <NavigationItem link="/" exact>ルールを見る</NavigationItem>
+        <NavigationItem btn clicked={props.modalOpened}>ゲームをやめる</NavigationItem>
+        <NavigationItem link="/rules" exact>ルールを見る</NavigationItem>
+        <NavigationItem link="/terms" exact>利用規約＆<br/>プライバシーポリシー</NavigationItem>
         <NavigationItem link="/logout">ログアウト</NavigationItem>
-
       </ul>
     );
   } else {
@@ -22,6 +22,8 @@ const navigationItems = ( props ) => {
         <ul className={classes.NavigationItems}>
           <NavigationItem link="/" exact>ホーム</NavigationItem>
           <NavigationItem link="/game-menu" exact>ゲームを作成</NavigationItem>
+          <NavigationItem link="/rules" exact>ルールを見る</NavigationItem>
+          <NavigationItem link="/terms" exact>利用規約＆<br/>プライバシーポリシー</NavigationItem>
           <NavigationItem link="/logout">ログアウト</NavigationItem>
         </ul>
     );

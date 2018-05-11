@@ -1,0 +1,144 @@
+
+
+
+.Chat{
+
+}
+
+.ChatRoom{
+  margin: 50px auto;
+}
+
+@media(min-width: 768px){
+  .ChatRoom{
+    max-width: 320px;
+
+  }
+}
+
+.ChatRoom h2{
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.ChatBox{
+  /* display: flex; */
+}
+
+.Msg, .SelfMsg{
+  /* display: flex; */
+  margin: 10px;
+  padding-right: 35px;
+  /* padding: 0 50px 0 0; */
+}
+
+.SelfMsg{
+  flex-direction: row-reverse;
+  padding-right: 0;
+  padding-left: 35px;
+  /* padding: 0 0 0 50px; */
+}
+
+.MsgOwner{
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-left: 40px;
+  margin-bottom: -7px;
+  color: white;
+}
+
+.MsgOwnerImage{
+  width: 30px;
+  height: 30px;
+  background-color: #eee;
+  border-radius: 50%;
+  background-position: center;
+  background-size: cover;
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
+.SelfMsg .MsgOwnerImage{
+  margin-left: 5px;
+  display: none;
+}
+.SubmitBtn{
+  display: flex;
+}
+
+.MsgBody{
+  flex: 1;
+  display: flex;
+}
+
+.SelfMsg .MsgBody{
+  flex-direction: row-reverse;
+}
+
+/* .MsgOwnerName{
+  font-size: 14px;
+  color: #696969;
+  margin: 0 40px;
+  margin-bottom: -6px;
+} */
+
+/* .SelfMsg .MsgOwnerName{
+  text-align: right;
+} */
+
+.MsgContent{
+  background-color: white;
+  margin: 5px 0;
+  padding: 8px 20px;
+  border-radius: 20px;
+  max-width: 250px;
+  word-wrap: break-word;
+  /* flex: 1; */
+}
+
+.SelfMsg .MsgContent{
+  background-color: lightblue;
+  /* border: 1px solid cornflowerblue; */
+}
+.SelfMsg .MsgOwner{
+  justify-content: flex-end;
+  display: none;
+}
+
+
+
+
+
+
+.Title{
+  /* opacity: 0; */
+  margin-top: 0;
+  letter-spacing: 12px;
+  line-height: 40px;
+  font-size: 30px;
+  font-family: 'Geo', sans-serif;
+  /* font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", "ＭＳ 明朝", serif; */
+  text-align: center;
+  /* animation-duration: 3s;
+  animation-name: fadeIn; */
+
+/*
+  animation-name: fadeIn;
+  animation-delay: 3s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear; */
+}
+
+@keyframes yurayura {
+  0%   { box-shadow: 0 0 5px #000; }
+  10%   { box-shadow: 0 0 10px #000; }
+  20%  { box-shadow: 0 0 20px #000; }
+  35%  { box-shadow: 0 0 15px #000; }
+  45%  { box-shadow: 0 0 10px #000; }
+  50%  { box-shadow: 0 0 5px #000; }
+  60%  { box-shadow: 0 0 10px #000; }
+  65%  { box-shadow: 0 0 5px #000; }
+  75%  { box-shadow: 0 0 20px #000; }
+  100% { box-shadow: 0 0 10px #000; }
+}

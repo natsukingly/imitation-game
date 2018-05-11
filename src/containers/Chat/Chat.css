@@ -1,0 +1,239 @@
+
+
+.errorMsg{
+  color: red;
+  padding: 10px 20px 0;
+  font-size: 14px;
+}
+
+
+.Chat{
+
+}
+
+.ChatRoom{
+  margin: 0 auto;
+  position: fixed;
+  top: 5px;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media(min-width: 768px){
+  .ChatRoom{
+    max-width: 400px;
+
+  }
+}
+
+.ChatRule{
+  font-size: 14px;
+  padding-top: 20px;
+  text-align: center;
+  color: white;
+}
+
+.ChatRoom h2{
+  text-align: center;
+  padding: 10px;
+  margin: 0 10px;
+  margin-bottom: 0;
+  font-size: 20px;
+  letter-spacing: 8px;
+}
+
+.ChatBox{
+  /* display: flex; */
+  /* height: 300px; */
+  position: relative;
+  overflow: scroll;
+  min-height: 200px;
+  flex: 1;
+}
+
+@media(min-width: 768px){
+  .ChatBox{
+
+  }
+}
+
+.ChatBox textarea{
+  min-height: 62px;
+}
+
+.Msg, .SelfMsg{
+  /* display: flex; */
+  margin: 20px 10px;
+  /* padding: 0 50px 0 0; */
+}
+
+.SelfMsg{
+  /* flex-direction: row-reverse; */
+  /* padding: 0 0 0 50px; */
+}
+
+.MsgOwner{
+  display: flex;
+  align-items: center;
+}
+
+.MsgOwnerImage{
+  width: 30px;
+  height: 30px;
+  background-color: #eee;
+  border-radius: 50%;
+  background-position: center;
+  background-size: cover;
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
+.LoadingBox{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  bottom: 0;
+  left: 10px;
+  background-color: #eee;
+  animation-name: loading;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+@keyframes loading{
+  0%   { background-color: #eee; }
+  100% { background-color: #ddd; }
+}
+
+.NoMsgBox{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  bottom: 0;
+  left: 10px;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: grey;
+  background-color: rgba(0,0,0,.05);
+}
+
+
+
+
+/* .SelfMsg .MsgImage{
+  margin-left: 5px;
+  margin-top: 8px;
+  display: none;
+} */
+.SubmitBtn{
+  display: flex;
+}
+
+.MsgBody{
+  flex: 1;
+  display: flex;
+}
+
+.MsgOwnerName{
+  font-size: 14px;
+  color: #696969;
+  margin: 0 50px;
+}
+
+/* .SelfMsg .MsgOwnerName{
+  text-align: right;
+} */
+
+.MsgContent{
+  background-color: white;
+  margin: 5px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  max-width: 250px;
+  word-wrap: break-word;
+  flex: 1;
+}
+
+.SelfMsg .MsgContent{
+  background-color: lightblue;
+  max-width: 250px;
+}
+
+.ChatTypeSwitchBox{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: white;
+  border: 1px solid grey;
+  margin: 0 10px;
+  padding: 3px;
+  border-radius: 10px;
+  font-size: 14px;
+  min-height: 45px;
+}
+
+.ChatTypeSwitch{
+  flex: 1 1;
+  text-align: center;
+  padding: 10px;
+  margin: 3px;
+  cursor: pointer;
+}
+
+.ChatTypeSwitch.ActiveSwitch{
+  background-color: rgba(0,0,0,.2);
+   font-weight: 600;
+   border-radius: 10px;
+  pointer-events: none;
+}
+
+.ChatTypeSwitch.DisabledSwitch{
+  pointer-events: none;
+}
+
+@media(min-width: 768px){
+  .ChatTypeSwitchBox{
+    margin: 0;
+  }
+}
+
+
+.Title{
+  /* opacity: 0; */
+  margin-top: 0;
+  letter-spacing: 12px;
+  line-height: 40px;
+  font-size: 30px;
+  font-family: 'Geo', sans-serif;
+  /* font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", "ＭＳ 明朝", serif; */
+  text-align: center;
+  /* animation-duration: 3s;
+  animation-name: fadeIn; */
+
+/*
+  animation-name: fadeIn;
+  animation-delay: 3s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear; */
+}
+
+@keyframes yurayura {
+  0%   { box-shadow: 0 0 5px #000; }
+  10%   { box-shadow: 0 0 10px #000; }
+  20%  { box-shadow: 0 0 20px #000; }
+  35%  { box-shadow: 0 0 15px #000; }
+  45%  { box-shadow: 0 0 10px #000; }
+  50%  { box-shadow: 0 0 5px #000; }
+  60%  { box-shadow: 0 0 10px #000; }
+  65%  { box-shadow: 0 0 5px #000; }
+  75%  { box-shadow: 0 0 20px #000; }
+  100% { box-shadow: 0 0 10px #000; }
+}

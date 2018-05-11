@@ -1,0 +1,50 @@
+.UserImage{
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  border: 10px solid white;
+  margin-bottom: 10px;
+  background-color: #eee;
+  background-size: cover;
+  background-position: center;
+  animation-name: loading;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+
+@keyframes loading{
+  0%   { background-color: #eee; }
+  100% { background-color: #bbb; }
+}
+
+.UserImageBox{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.UserImageBox svg{
+  position: absolute;
+  right: 10px;
+  top: -10px;
+  background-color: white;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+
+@media(min-width: 768px){
+  .UserImageBox svg{
+    position: absolute;
+    right: -30px;
+    top: -30px;
+  }
+  .UserImage{
+    height: 250px;
+    width: 250px;
+
+  }
+}

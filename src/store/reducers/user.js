@@ -10,7 +10,8 @@ const initialState = {
     gameId: null,
     error: null,
     loading: false,
-    authRedirectPath: '/'
+    authRedirectPath: '/',
+    edited: false,
 };
 
 const authStart = ( state, action ) => {
@@ -26,6 +27,7 @@ const authSuccess = (state, action) => {
         leader: action.user.leader,
         isGaming: action.user.isGaming,
         gameId: action.user.gameId,
+        edited: action.user.edited,
         isAuthenticated: true,
         error: null,
         loading: false
@@ -69,10 +71,11 @@ const updateStart = ( state, action ) => {
 };
 
 const updateSuccess = (state, action) => {
-    console.log('from reducer');
+    // console.log('from reducer');
     return updateObject( state, {
         name: action.user.name,
         image: action.user.image,
+        edited: action.user.edited,
         error: null,
         loading: false
     } );

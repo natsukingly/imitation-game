@@ -17,6 +17,7 @@
   line-height: 40px;
   font-size: 30px;
   font-family: 'Geo', sans-serif;
+  /* font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", "ＭＳ 明朝", serif; */
   text-align: center;
   /* animation-duration: 3s;
   animation-name: fadeIn; */
@@ -28,11 +29,20 @@
   animation-timing-function: linear; */
 }
 
+.LinkToTerms{
+  font-size: 14px;
+  text-align: left;
+  padding: 0 10px;
+  color: grey;
+}
+
 .LogoBox{
-  display: flex;
-  align-items: center;
+  margin: 0 auto;
+  /* display: flex; */
+  /* align-items: center; */
   justify-content: center;
   padding-bottom: 0;
+
   /* animation: korokoro 2.5s linear 0s 1; */
 }
 .LogoBox svg{
@@ -60,7 +70,6 @@
 
 
 .LogoBox svg path{
-
   opacity: 0;
   animation-duration: 3s;
   animation-name: fadeIn;

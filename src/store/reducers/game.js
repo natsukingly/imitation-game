@@ -34,15 +34,33 @@ const gameGetInfoSuccess = (state, action) => {
    } );
 }
 
+const gameHasAnimated = (state, action) => {
+  return updateObject( state, {
+      willAnimate: false
+   } );
+}
+
+const gameWillAnimate = (state, action) => {
+  return updateObject( state, {
+      willAnimate: true
+   } );
+}
+
 
 // const gameGetPlayerRanking = (state, action) => {
 //   return updateObject( state, {
 //       ranking: action.ranking
 //    } );
 // }
+
+
+
 const gameSetQuestionSuccess = (state, action) => {
+    // console.log(action)
     return updateObject( state, {
-        question: action.question
+        question: action.question,
+        judge: action.judge,
+        target: action.target
      } );
 };
 
@@ -65,6 +83,10 @@ const gameCheckStatusSuccess = (state, action) => {
         score: action.info.score,
         status: action.info.info.status,
         stage: action.info.info.stage,
+        newMessage: action.info.info.newMessage,
+        messages: action.info.chat,
+        gameType: action.info.info.gameType,
+        time: action.info.info.stageChangedAt
      } );
 };
 
@@ -88,7 +110,7 @@ const gameCreate = ( state, action ) => {
 };
 
 const gameCreateSuccess = (state, action) => {
-    console.log("success!")
+    // console.log("success!")
     return updateObject( state, {
         loading: false,
         userIsGaming: true
@@ -116,10 +138,32 @@ const gameInputSubmitSuccess = (state, action) => {
 const gameMoveForwardSuccess = (state, action) => {
   return updateObject( state, {
       stage: action.nextStage,
+      time: action.time,
       playerStatus: false,
       question: null,
       correctAnswer: null,
       dummyAnswer: null
+  });
+};
+
+const gameSubmitMessageSuccess = (state, action) => {
+  // console.log("submit success")
+  return updateObject( state, {
+
+  });
+};
+
+const gameSetMessagesSuccess = (state, action) => {
+  // console.log("get messages success")
+  return updateObject( state, {
+      messages: action.messages
+  });
+};
+
+const gameSetUMessagesSuccess = (state, action) => {
+  // console.log("get uMessages success")
+  return updateObject( state, {
+      uMessages: action.uMessages
   });
 };
 
@@ -162,7 +206,13 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.GAME_CHECK_USER_GAMING_STATUS_SUCCESS: return gameCheckUserGamingStatusSuccess(state, action);
         case actionTypes.GAME_SET_PRESET_OPTIONS_SUCCESS: return gameSetPresetOptionsSuccess(state, action);
         case actionTypes.GAME_INPUT_SUBMIT_SUCCESS: return gameInputSubmitSuccess(state, action);
+        case actionTypes.GAME_SUBMIT_MESSAGE_SUCCESS: return gameSubmitMessageSuccess(state, action);
+        case actionTypes.GAME_SET_MESSAGES_SUCCESS: return gameSetMessagesSuccess(state, action);
+        case actionTypes.GAME_SET_UMESSAGES_SUCCESS: return gameSetUMessagesSuccess(state, action);
         case actionTypes.GAME_PLAYER_IS_READY: return gamePlayerIsReady(state, action);
+
+        case actionTypes.GAME_HAS_ANIMATED: return gameHasAnimated(state, action);
+        case actionTypes.GAME_WILL_ANIMATE: return gameWillAnimate(state, action);
         default:
             return state;
     }
